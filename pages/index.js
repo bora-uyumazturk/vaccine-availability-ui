@@ -15,22 +15,25 @@ export default function Home() {
   if (!data) return <div>loading...</div>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen py-2">
       <Head>
-        <title>Create Next App</title>
+        <title>DMVAccine</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col items-center justify-center flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">Check Covid Vaccine Availability</h1>
+      <main className="flex flex-col items-center flex-initial px-4 h-3/4 text-center">
+        <h1 className="text-6xl font-bold">DMVaccine.com</h1>
+        <p className="p-2">
+          Check Covid vaccine availability in the DC-Maryland-Virginia area.
+        </p>
 
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <LocaleList entries={data["data"]}></LocaleList>
-          <Map></Map>
+        <div className="flex flex-1 space-x-4 items-center justify-center mt-6 w-screen h-96">
+          <LocaleList entries={data["data"]} />
+          <Map />
         </div>
       </main>
 
-      <footer className="flex items-center justify-center w-full h-24 border-t">
+      <footer className="flex items-center justify-center w-full h-20 border-t margin-top">
         <a
           className="flex items-center justify-center"
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"

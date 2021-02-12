@@ -6,4 +6,8 @@
   .border-bottom {
     border-bottom: 1px solid #e3e3e3;
   }
+
+  .margin-top {
+    margin-top: 2rem;
+  }
 }
