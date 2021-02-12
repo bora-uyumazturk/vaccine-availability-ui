@@ -7,5 +7,5 @@ const DATA_URL =
 // currently returns sample data
 export default async function handler(req, res) {
   const data = await d3.csv(DATA_URL);
-  res.status(200).json({ data: data[0] });
+  res.status(200).json({ data: data });
 }

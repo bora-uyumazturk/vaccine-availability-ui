@@ -1,9 +1,14 @@
 import Head from "next/head";
+import useSWR from "swr";
 
 import Map from "../components/map";
-import LocaleView from "../components/localeView";
+import LocaleList from "../components/localeList";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Home() {
+  const { data, error } = useSWR("/api/", fetcher);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <Head>
@@ -15,7 +20,7 @@ export default function Home() {
         <h1 className="text-6xl font-bold">Check Covid Vaccine Availability</h1>
 
         <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <LocaleView></LocaleView>
+          <LocaleList entries={data["data"]}></LocaleList>
 
           <Map></Map>
         </div>

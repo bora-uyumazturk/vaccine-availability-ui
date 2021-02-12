@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .border-bottom {
+    border-bottom: 1px solid #e3e3e3;
+  }
+}
