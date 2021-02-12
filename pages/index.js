@@ -10,6 +10,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 export default function Home() {
   const { data, error } = useSWR("/api/", fetcher);
 
+  // TODO: more robust error handling
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
 
@@ -24,12 +25,7 @@ export default function Home() {
         <h1 className="text-6xl font-bold">Check Covid Vaccine Availability</h1>
 
         <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <ul className="border overflow-y-scroll max-h-96">
-            {data["data"].map((e) => (
-              <LocaleDetail entry={e}></LocaleDetail>
-            ))}
-          </ul>
-
+          <LocaleList entries={data["data"]}></LocaleList>
           <Map></Map>
         </div>
       </main>
