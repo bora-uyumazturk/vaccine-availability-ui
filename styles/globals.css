@@ -11,3 +11,8 @@
     margin-top: 2rem;
   }
 }
+
+/* remove outline effect */
+.mapboxgl-canvas {
+  outline: none !important;
+}

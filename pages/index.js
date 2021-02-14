@@ -19,6 +19,11 @@ export default function Home() {
       <Head>
         <title>DMVAccine</title>
         <link rel="icon" href="/favicon.ico" />
+        # for mapbox-gl-js
+        <link
+          href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
+          rel="stylesheet"
+        />
       </Head>
 
       <main className="flex flex-col items-center flex-initial px-4 h-3/4 text-center">
