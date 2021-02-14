@@ -12,6 +12,24 @@ export default function Map({ token }) {
       zoom: 8,
       attributionControl: false,
     });
+
+    map.on("load", function () {
+      map.addSource("mapbox-boundary", {
+        type: "vector",
+        url: "mapbox://borauyumazturk.013f7wds",
+      });
+      map.addLayer({
+        id: "boundary-data",
+        type: "fill",
+        source: "mapbox-boundary",
+        "source-layer": "cb_2019_us_place_500k-82b5vo",
+        paint: {
+          "fill-color": "#00ffff",
+          "fill-opacity": 0.5,
+          "fill-outline-color": "#0a0a0a",
+        },
+      });
+    });
   });
 
   return <div id="my-map" className="relative h-full w-2/4" />;
