@@ -34,7 +34,7 @@ export default function Home() {
 
         <div className="flex flex-1 space-x-4 items-center justify-center mt-6 w-screen h-96">
           <LocaleList entries={data["data"]} />
-          <Map />
+          <Map entries={data["data"]} />
         </div>
       </main>
 
