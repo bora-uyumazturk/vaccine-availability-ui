@@ -4,13 +4,13 @@ const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-export default function Map({ token, entries }) {
+export default function Map({ center, changeLocation, entries }) {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: "my-map",
       style: "mapbox://styles/mapbox/streets-v9",
-      center: [-77.0364, 38.9072],
-      zoom: 8,
+      center: [center.long, center.lat],
+      zoom: center.zoom,
       attributionControl: false,
     });
 
@@ -31,7 +31,6 @@ export default function Map({ token, entries }) {
             id: "boundary-data",
             type: "fill",
             source: "mapbox-boundary",
-            // "source-layer": "cb_2019_us_place_500k-82b5vo",
             paint: {
               "fill-color": {
                 property: "status",
@@ -41,13 +40,24 @@ export default function Map({ token, entries }) {
                   ["Available", "#3ce862"],
                 ],
               },
-              "fill-opacity": 0.5,
+              "fill-opacity": 0.8,
               "fill-outline-color": "#0a0a0a",
             },
           });
         });
     });
-  });
+
+    map.on("click", function (e) {
+      var features = map.queryRenderedFeatures(e.point, {
+        layers: ["boundary-data"],
+      });
+
+      if (features.length > 0) {
+        console.log(features[0].properties.NAME);
+        changeLocation(features[0].properties.NAME);
+      }
+    });
+  }, []);
 
   return <div id="my-map" className="relative h-full w-2/4" />;
 }

@@ -1,5 +1,6 @@
 import Head from "next/head";
 import useSWR from "swr";
+import { useState, useEffect } from "react";
 
 import Map from "../components/map";
 import LocaleList from "../components/localeList";
@@ -8,6 +9,14 @@ import LocaleDetail from "../components/LocaleDetail";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Home() {
+  const [center, setCenter] = useState({
+    long: -77.0364,
+    lat: 38.9072,
+    zoom: 6,
+  });
+
+  const [location, setLocation] = useState(null);
+
   const { data, error } = useSWR("/api/", fetcher);
 
   // TODO: more robust error handling
@@ -33,8 +42,12 @@ export default function Home() {
         </p>
 
         <div className="flex flex-1 space-x-4 items-center justify-center mt-6 w-screen h-96">
-          <LocaleList entries={data["data"]} />
-          <Map entries={data["data"]} />
+          <LocaleList location={location} entries={data["data"]} />
+          <Map
+            center={center}
+            changeLocation={setLocation}
+            entries={data["data"]}
+          />
         </div>
       </main>
 
