@@ -1,27 +1,18 @@
-import ReactMapGL from "react-map-gl";
-import { useState } from "react";
+import { useEffect } from "react";
+const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
+
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 export default function Map({ token }) {
-  const [viewport, setViewport] = useState({
-    latitude: 38.9072,
-    longitude: -77.0364,
-    zoom: 6,
+  useEffect(() => {
+    const map = new mapboxgl.Map({
+      container: "my-map",
+      style: "mapbox://styles/mapbox/streets-v9",
+      center: [-77.0364, 38.9072],
+      zoom: 8,
+      attributionControl: false,
+    });
   });
 
-  const onViewportChange = (view) => {
-    view.width = "50%";
-    view.height = "100%";
-    setViewport(view);
-  };
-
-  return (
-    <ReactMapGL
-      {...viewport}
-      mapStyle="mapbox://styles/mapbox/streets-v9"
-      mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-      onViewportChange={(view) => onViewportChange(view)}
-      width="50%"
-      height="100%"
-    />
-  );
+  return <div id="my-map" className="relative h-full w-2/4" />;
 }
