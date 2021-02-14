@@ -33,7 +33,14 @@ export default function Map({ token, entries }) {
             source: "mapbox-boundary",
             // "source-layer": "cb_2019_us_place_500k-82b5vo",
             paint: {
-              "fill-color": "#00ffff",
+              "fill-color": {
+                property: "status",
+                type: "categorical",
+                stops: [
+                  ["Fully Booked", "#ed3b53"],
+                  ["Available", "#3ce862"],
+                ],
+              },
               "fill-opacity": 0.5,
               "fill-outline-color": "#0a0a0a",
             },
