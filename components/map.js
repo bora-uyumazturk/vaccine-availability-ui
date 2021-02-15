@@ -52,9 +52,18 @@ export default function Map({ center, changeLocation, entries }) {
         layers: ["boundary-data"],
       });
 
+      console.log(e.lngLat);
       if (features.length > 0) {
         console.log(features[0].properties.NAME);
         changeLocation(features[0].properties.NAME.toLowerCase());
+
+        // TODO: flyTo on location change using
+        // lat long data.
+        map.flyTo({
+          center: e.lngLat,
+          essential: true,
+          zoom: center.zoom,
+        });
       }
     });
   }, []);
