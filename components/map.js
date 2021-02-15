@@ -54,7 +54,7 @@ export default function Map({ center, changeLocation, entries }) {
 
       if (features.length > 0) {
         console.log(features[0].properties.NAME);
-        changeLocation(features[0].properties.NAME);
+        changeLocation(features[0].properties.NAME.toLowerCase());
       }
     });
   }, []);

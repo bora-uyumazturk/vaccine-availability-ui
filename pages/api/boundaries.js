@@ -40,6 +40,14 @@ export default async function handler(req, res) {
       return x;
     });
 
+    // filter to DMV
+    csv_data = _.chain(csv_data)
+      .groupBy("state")
+      .pick(["VA", "MD", "DC"])
+      .values()
+      .flatten()
+      .value();
+
     json_data.features = updateFeatures(json_data.features, csv_data);
 
     res.status(200).json({ data: json_data });

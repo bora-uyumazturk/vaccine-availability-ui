@@ -42,7 +42,11 @@ export default function Home() {
         </p>
 
         <div className="flex flex-1 space-x-4 items-center justify-center mt-6 w-screen h-96">
-          <LocaleList location={location} entries={data["data"]} />
+          <LocaleList
+            location={location}
+            changeLocation={setLocation}
+            entries={data["data"]}
+          />
           <Map
             center={center}
             changeLocation={setLocation}
