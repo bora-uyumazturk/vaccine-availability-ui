@@ -12,7 +12,7 @@ export default function Home() {
   const [center, setCenter] = useState({
     long: -77.0364,
     lat: 38.9072,
-    zoom: 6,
+    zoom: 8,
   });
 
   const [location, setLocation] = useState(null);
@@ -49,6 +49,7 @@ export default function Home() {
           />
           <Map
             center={center}
+            location={location}
             changeLocation={setLocation}
             entries={data["data"]}
           />
