@@ -1,6 +1,6 @@
 import LocaleDetail from "./localeDetail";
 import React from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function LocaleList({ location, changeLocation, entries }) {
   console.log(entries);
@@ -10,19 +10,26 @@ export default function LocaleList({ location, changeLocation, entries }) {
     return acc;
   }, {});
 
+  const [clicked, setClicked] = useState(false);
+
   useEffect(() => {
     console.log("from LocaleList:");
     console.log(location);
-    if (location) {
+    if (location && !clicked) {
       refs[location.toLowerCase()].current.scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: "center",
       });
     }
+
+    setClicked(false);
   }, [location]);
 
   return (
-    <ul className="flex-initial border overflow-auto h-full">
+    <ul
+      onClick={() => setClicked(true)}
+      className="flex-initial border overflow-auto h-full"
+    >
       {entries.map((e) => (
         <LocaleDetail
           location={location}
