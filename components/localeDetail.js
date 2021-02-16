@@ -15,7 +15,7 @@ export default function LocaleDetail({
       ref={inputRef}
       className={`p-3 text-xs text-left ${getFont(
         location
-      )} border-bottom w-auto hover:text-blue-600 focus:text-blue-600`}
+      )} font-semibold border-bottom w-auto hover:bg-gray-100`}
       onClick={() => changeLocation(entry.city.toLowerCase())}
     >
       {entry.city}, {entry.state}
