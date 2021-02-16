@@ -1,6 +1,23 @@
-export default function LocaleDetail({ entry }) {
+export default function LocaleDetail({
+  location,
+  changeLocation,
+  inputRef,
+  entry,
+}) {
+  const getFont = (location) => {
+    if (location === entry.city.toLowerCase()) {
+      return "text-blue-600";
+    }
+  };
+
   return (
-    <div className="p-3 text-xs text-left border-bottom w-auto hover:text-blue-600 focus:text-blue-600">
+    <div
+      ref={inputRef}
+      className={`p-3 text-xs text-left ${getFont(
+        location
+      )} border-bottom w-auto hover:text-blue-600 focus:text-blue-600`}
+      onClick={() => changeLocation(entry.city.toLowerCase())}
+    >
       {entry.city}, {entry.state}
       <br />
       Percent available: {entry.pctAvailable}
