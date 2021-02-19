@@ -16,3 +16,7 @@
 .mapboxgl-canvas {
   outline: none !important;
 }
+
+#my-map canvas {
+  cursor: default;
+}
