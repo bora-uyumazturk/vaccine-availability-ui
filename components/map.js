@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 
@@ -19,6 +19,8 @@ export default function Map({ center, location, changeLocation, entries }) {
   let geoIds = useRef(null);
 
   let ref = useRef(null);
+
+  const [clicked, setClicked] = useState(false);
 
   // set up map and load data
   useEffect(() => {
@@ -100,6 +102,7 @@ export default function Map({ center, location, changeLocation, entries }) {
       });
 
       if (features.length > 0) {
+        setClicked(true);
         changeLocation(features[0].properties.NAME.toLowerCase());
       }
     });
@@ -143,10 +146,13 @@ export default function Map({ center, location, changeLocation, entries }) {
   useEffect(() => {
     if (dataRef.current && geoIds.current && geoIds.current[location]) {
       const feat = getFeatures(dataRef.current, geoIds.current[location])[0];
-      ref.current.flyTo({
-        center: [parseFloat(feat.INTPTLONG), parseFloat(feat.INTPTLAT)],
-        zoom: center.zoom,
-      });
+
+      if (!clicked) {
+        ref.current.flyTo({
+          center: [parseFloat(feat.INTPTLONG), parseFloat(feat.INTPTLAT)],
+          zoom: center.zoom,
+        });
+      }
 
       ref.current.setFilter("location-highlight", [
         "==",
@@ -154,6 +160,8 @@ export default function Map({ center, location, changeLocation, entries }) {
         location,
       ]);
     }
+
+    setClicked(false);
   }, [location]);
 
   return <div id="my-map" className="relative h-full w-2/4" />;
