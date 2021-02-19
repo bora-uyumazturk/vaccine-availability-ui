@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 
@@ -20,6 +20,8 @@ export default function Map({ center, location, changeLocation, entries }) {
 
   let ref = useRef(null);
 
+  const [clicked, setClicked] = useState(false);
+
   // set up map and load data
   useEffect(() => {
     // initialize map and set map effects
@@ -37,8 +39,12 @@ export default function Map({ center, location, changeLocation, entries }) {
       fetch("/api/boundaries")
         .then((res) => res.json())
         .then((geojson) => {
-          console.log(geojson);
-          return geojson.data;
+          let result = geojson.data;
+          result.features = result.features.map((x) => {
+            x.properties.IDENTIFIER = x.properties.NAME.toLowerCase();
+            return x;
+          });
+          return result;
         })
         .then((geojson) => {
           map.addSource("mapbox-boundary", {
@@ -46,6 +52,7 @@ export default function Map({ center, location, changeLocation, entries }) {
             data: geojson,
           });
 
+          // base availability layer
           map.addLayer({
             id: "boundary-data",
             type: "fill",
@@ -59,9 +66,32 @@ export default function Map({ center, location, changeLocation, entries }) {
                   ["Available", "#3ce862"],
                 ],
               },
-              "fill-opacity": 0.8,
+              "fill-opacity": 1.0,
               "fill-outline-color": "#0a0a0a",
             },
+          });
+          // location highlight layer
+          map.addLayer({
+            id: "mouse-highlight",
+            type: "line",
+            source: "mapbox-boundary",
+            paint: {
+              "line-width": 2,
+            },
+            // don't highlight anything at first
+            filter: false,
+          });
+          // location highlight layer
+          map.addLayer({
+            id: "location-highlight",
+            type: "line",
+            source: "mapbox-boundary",
+            paint: {
+              "line-color": "#f2ec2e",
+              "line-width": 2,
+            },
+            // don't highlight anything at first
+            filter: false,
           });
         });
     });
@@ -72,7 +102,22 @@ export default function Map({ center, location, changeLocation, entries }) {
       });
 
       if (features.length > 0) {
+        setClicked(true);
         changeLocation(features[0].properties.NAME.toLowerCase());
+      }
+    });
+
+    map.on("mousemove", function (e) {
+      var features = map.queryRenderedFeatures(e.point, {
+        layers: ["boundary-data"],
+      });
+
+      if (features.length > 0) {
+        var identifier = features[0].properties.NAME.toLowerCase();
+
+        map.setFilter("mouse-highlight", ["in", "IDENTIFIER", identifier]);
+      } else {
+        map.setFilter("mouse-highlight", false);
       }
     });
 
@@ -97,15 +142,26 @@ export default function Map({ center, location, changeLocation, entries }) {
     setGeoIds();
   }, []);
 
-  // add changing of coordinates on locatino change
+  // add changing of coordinates on location change
   useEffect(() => {
     if (dataRef.current && geoIds.current && geoIds.current[location]) {
       const feat = getFeatures(dataRef.current, geoIds.current[location])[0];
-      ref.current.flyTo({
-        center: [parseFloat(feat.INTPTLONG), parseFloat(feat.INTPTLAT)],
-        zoom: center.zoom,
-      });
+
+      if (!clicked) {
+        ref.current.flyTo({
+          center: [parseFloat(feat.INTPTLONG), parseFloat(feat.INTPTLAT)],
+          zoom: center.zoom,
+        });
+      }
+
+      ref.current.setFilter("location-highlight", [
+        "==",
+        "IDENTIFIER",
+        location,
+      ]);
     }
+
+    setClicked(false);
   }, [location]);
 
   return <div id="my-map" className="relative h-full w-2/4" />;
