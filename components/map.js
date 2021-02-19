@@ -27,7 +27,7 @@ export default function Map({ center, location, changeLocation, entries }) {
     // initialize map and set map effects
     ref.current = new mapboxgl.Map({
       container: "my-map",
-      style: "mapbox://styles/mapbox/streets-v9",
+      style: "mapbox://styles/borauyumazturk/ckl4pn50n3lqa17o78ubsy0d0",
       center: [center.long, center.lat],
       zoom: center.zoom,
       attributionControl: false,
@@ -52,47 +52,67 @@ export default function Map({ center, location, changeLocation, entries }) {
             data: geojson,
           });
 
+          var layers = map.getStyle().layers;
+          // Find the index of the first symbol layer in the map style
+          // so that we can overlay other layers on top of it.
+          var firstSymbolId;
+          for (var i = 0; i < layers.length; i++) {
+            if (layers[i].type === "symbol") {
+              firstSymbolId = layers[i].id;
+              break;
+            }
+          }
+
           // base availability layer
-          map.addLayer({
-            id: "boundary-data",
-            type: "fill",
-            source: "mapbox-boundary",
-            paint: {
-              "fill-color": {
-                property: "status",
-                type: "categorical",
-                stops: [
-                  ["Fully Booked", "#ed3b53"],
-                  ["Available", "#3ce862"],
-                ],
+          map.addLayer(
+            {
+              id: "boundary-data",
+              type: "fill",
+              source: "mapbox-boundary",
+              paint: {
+                "fill-color": {
+                  property: "status",
+                  type: "categorical",
+                  stops: [
+                    ["Fully Booked", "#ed3b53"],
+                    ["Available", "#3ce862"],
+                  ],
+                },
+                "fill-opacity": 1.0,
+                "fill-outline-color": "#0a0a0a",
               },
-              "fill-opacity": 1.0,
-              "fill-outline-color": "#0a0a0a",
             },
-          });
+            firstSymbolId
+          );
           // location highlight layer
-          map.addLayer({
-            id: "mouse-highlight",
-            type: "line",
-            source: "mapbox-boundary",
-            paint: {
-              "line-width": 2,
+          map.addLayer(
+            {
+              id: "mouse-highlight",
+              type: "line",
+              source: "mapbox-boundary",
+              paint: {
+                "line-width": 2,
+              },
+              // don't highlight anything at first
+              filter: false,
             },
-            // don't highlight anything at first
-            filter: false,
-          });
+            firstSymbolId
+          );
           // location highlight layer
-          map.addLayer({
-            id: "location-highlight",
-            type: "line",
-            source: "mapbox-boundary",
-            paint: {
-              "line-color": "#f2ec2e",
-              "line-width": 2,
+          map.addLayer(
+            {
+              id: "location-highlight",
+              type: "line",
+              source: "mapbox-boundary",
+              paint: {
+                "line-color": "#f2ec2e",
+                "line-width": 2,
+              },
+              // don't highlight anything at first
+              filter: false,
             },
-            // don't highlight anything at first
-            filter: false,
-          });
+            firstSymbolId
+          );
         });
     });
 
