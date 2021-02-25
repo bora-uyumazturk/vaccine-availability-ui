@@ -6,14 +6,18 @@ import _ from "lodash";
 function updateFeatures(features, city_data) {
   var updatedFeatures = features.map((el) => {
     var city = el.properties.NAME.toLowerCase();
+    var stateFips = el.properties.STATEFP;
     var correspondingEntry = _.find(
       city_data,
-      _.matchesProperty("city_lower", city)
+      // _.matchesProperty("city_lower", city)
+      _.matches({ city_lower: city, fips: stateFips })
     );
     if (correspondingEntry) {
       el.properties.pctAvailable = correspondingEntry.pctAvailable;
       el.properties.totalAvailable = correspondingEntry.totalAvailable;
       el.properties.status = correspondingEntry.status;
+      el.properties.state = correspondingEntry.state;
+      el.properties.identifier = `${el.properties.NAME.toLowerCase()}-${el.properties.state.toLowerCase()}`;
       return el;
     }
   });
@@ -24,19 +28,24 @@ function updateFeatures(features, city_data) {
 const JSON_URL =
   "https://raw.githubusercontent.com/bora-uyumazturk/us-place-geojson/main/dmv-boundaries.json";
 
+const FIPS_URL =
+  "https://gist.githubusercontent.com/wavded/1250983/raw/bf7c1c08f7b1596ca10822baeb8049d7350b0a4b/stateCodeToFips.json";
+
 const CSV_URL =
   "https://raw.githubusercontent.com/bora-uyumazturk/scrape-covid-availability/main/data/vaccine_info.csv";
 
 // currently returns sample data
 export default async function handler(req, res) {
-  let promises = [d3.csv(CSV_URL), d3.json(JSON_URL)];
+  let promises = [d3.csv(CSV_URL), d3.json(JSON_URL), d3.json(FIPS_URL)];
 
   Promise.all(promises).then((allData) => {
     let csv_data = allData[0];
     let json_data = allData[1];
+    let fips_data = allData[2];
 
     csv_data = csv_data.map((x) => {
       x.city_lower = x.city.toLowerCase();
+      x.fips = fips_data[x.state];
       return x;
     });
 

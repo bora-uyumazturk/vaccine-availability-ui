@@ -5,8 +5,14 @@ import { useState, useEffect } from "react";
 export default function LocaleList({ location, changeLocation, entries }) {
   console.log(entries);
   // https://www.robinwieruch.de/react-scroll-to-item
+  // const refs = entries.reduce((acc, value) => {
+  //   acc[value.city.toLowerCase()] = React.createRef();
+  //   return acc;
+  // }, {});
   const refs = entries.reduce((acc, value) => {
-    acc[value.city.toLowerCase()] = React.createRef();
+    acc[
+      `${value.city.toLowerCase()}-${value.state.toLowerCase()}`
+    ] = React.createRef();
     return acc;
   }, {});
 
@@ -16,6 +22,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
     console.log("from LocaleList:");
     console.log(location);
     if (location && !clicked) {
+      console.log(location.toLowerCase());
       refs[location.toLowerCase()].current.scrollIntoView({
         behavior: "smooth",
         block: "center",
@@ -34,7 +41,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
         <LocaleDetail
           location={location}
           changeLocation={changeLocation}
-          inputRef={refs[e.city.toLowerCase()]}
+          inputRef={refs[`${e.city.toLowerCase()}-${e.state.toLowerCase()}`]}
           entry={e}
         ></LocaleDetail>
       ))}
