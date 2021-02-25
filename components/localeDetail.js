@@ -5,7 +5,9 @@ export default function LocaleDetail({
   entry,
 }) {
   const getFont = (location) => {
-    if (location === entry.city.toLowerCase()) {
+    if (
+      location === `${entry.city.toLowerCase()}-${entry.state.toLowerCase()}`
+    ) {
       return "text-blue-600";
     }
   };
@@ -13,14 +15,16 @@ export default function LocaleDetail({
   return (
     <div
       ref={inputRef}
-      className={`p-3 text-xs text-left ${getFont(
+      className={`p-3 text-sm text-left ${getFont(
         location
-      )} font-semibold border-bottom w-auto hover:bg-gray-100`}
-      onClick={() => changeLocation(entry.city.toLowerCase())}
+      )} border-bottom w-auto hover:bg-gray-100`}
+      onClick={() =>
+        changeLocation(
+          `${entry.city.toLowerCase()}-${entry.state.toLowerCase()}`
+        )
+      }
     >
       {entry.city}, {entry.state}
-      <br />
-      Percent available: {entry.pctAvailable}
       <br />
       Status: {entry.status}
       <br />

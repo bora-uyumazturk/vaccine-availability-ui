@@ -44,6 +44,7 @@ export default function Map({ center, location, changeLocation, entries }) {
             x.properties.IDENTIFIER = x.properties.NAME.toLowerCase();
             return x;
           });
+          console.log(result);
           return result;
         })
         .then((geojson) => {
@@ -123,7 +124,7 @@ export default function Map({ center, location, changeLocation, entries }) {
 
       if (features.length > 0) {
         setClicked(true);
-        changeLocation(features[0].properties.NAME.toLowerCase());
+        changeLocation(features[0].properties.identifier);
       }
     });
 
@@ -133,9 +134,9 @@ export default function Map({ center, location, changeLocation, entries }) {
       });
 
       if (features.length > 0) {
-        var identifier = features[0].properties.NAME.toLowerCase();
-
-        map.setFilter("mouse-highlight", ["in", "IDENTIFIER", identifier]);
+        var identifier = features[0].properties.identifier;
+        console.log(identifier);
+        map.setFilter("mouse-highlight", ["in", "identifier", identifier]);
       } else {
         map.setFilter("mouse-highlight", false);
       }
@@ -155,7 +156,8 @@ export default function Map({ center, location, changeLocation, entries }) {
       geoIds.current = data.data.features
         .map((x) => x.properties)
         .reduce((acc, val) => {
-          acc[val.NAME.toLowerCase()] = val.GEOID;
+          // acc[val.NAME.toLowerCase()] = val.GEOID;
+          acc[val.identifier] = val.GEOID;
           return acc;
         }, {});
     };
@@ -176,13 +178,13 @@ export default function Map({ center, location, changeLocation, entries }) {
 
       ref.current.setFilter("location-highlight", [
         "==",
-        "IDENTIFIER",
+        "identifier",
         location,
       ]);
     }
 
     setClicked(false);
-  }, [location]);
+  }, [location, clicked]);
 
   return <div id="my-map" className="relative h-full w-2/4" />;
 }
