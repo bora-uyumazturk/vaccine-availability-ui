@@ -1,6 +1,7 @@
 import LocaleDetail from "./localeDetail";
 import React from "react";
 import { useState, useEffect } from "react";
+import { toIdentifier } from "../lib/utils";
 
 export default function LocaleList({ location, changeLocation, entries }) {
   console.log(entries);
@@ -10,9 +11,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
   //   return acc;
   // }, {});
   const refs = entries.reduce((acc, value) => {
-    acc[
-      `${value.city.toLowerCase()}-${value.state.toLowerCase()}`
-    ] = React.createRef();
+    acc[toIdentifier(value.city, value.fips)] = React.createRef();
     return acc;
   }, {});
 
@@ -41,7 +40,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
         <LocaleDetail
           location={location}
           changeLocation={changeLocation}
-          inputRef={refs[`${e.city.toLowerCase()}-${e.state.toLowerCase()}`]}
+          inputRef={refs[toIdentifier(e.city, e.fips)]}
           entry={e}
         ></LocaleDetail>
       ))}
