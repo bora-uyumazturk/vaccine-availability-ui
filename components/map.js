@@ -1,22 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { toIdentifier, getByStatus, getGazetteerFeatures } from "../lib/utils";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-const fetcher = (url) =>
-  fetch(url).then((res) => {
-    res.json();
-  });
-
-function getFeatures(data, geoid) {
-  return _.filter(data, { GEOID: geoid });
-}
-
 export default function Map({ center, location, changeLocation, entries }) {
   let dataRef = useRef(null);
-
-  let geoIds = useRef(null);
 
   let ref = useRef(null);
 
@@ -36,90 +26,91 @@ export default function Map({ center, location, changeLocation, entries }) {
     let map = ref.current;
 
     map.on("load", function () {
-      fetch("/api/boundaries")
-        .then((res) => res.json())
-        .then((geojson) => {
-          let result = geojson.data;
-          result.features = result.features.map((x) => {
-            x.properties.IDENTIFIER = x.properties.NAME.toLowerCase();
-            return x;
-          });
-          console.log(result);
-          return result;
-        })
-        .then((geojson) => {
-          map.addSource("mapbox-boundary", {
-            type: "geojson",
-            data: geojson,
-          });
+      var layers = map.getStyle().layers;
+      // Find the index of the first symbol layer in the map style
+      // so that we can overlay other layers on top of it.
+      var firstSymbolId;
+      for (var i = 0; i < layers.length; i++) {
+        if (layers[i].type === "symbol") {
+          firstSymbolId = layers[i].id;
+          break;
+        }
+      }
 
-          var layers = map.getStyle().layers;
-          // Find the index of the first symbol layer in the map style
-          // so that we can overlay other layers on top of it.
-          var firstSymbolId;
-          for (var i = 0; i < layers.length; i++) {
-            if (layers[i].type === "symbol") {
-              firstSymbolId = layers[i].id;
-              break;
-            }
-          }
+      map.addSource("mapbox-dummy-boundary", {
+        type: "vector",
+        url: "mapbox://borauyumazturk.cu4497hu",
+      });
 
-          // base availability layer
-          map.addLayer(
-            {
-              id: "boundary-data",
-              type: "fill",
-              source: "mapbox-boundary",
-              paint: {
-                "fill-color": {
-                  property: "status",
-                  type: "categorical",
-                  stops: [
-                    ["Fully Booked", "#ed3b53"],
-                    ["Available", "#3ce862"],
-                  ],
-                },
-                "fill-opacity": 1.0,
-                "fill-outline-color": "#0a0a0a",
-              },
-            },
-            firstSymbolId
-          );
-          // location highlight layer
-          map.addLayer(
-            {
-              id: "mouse-highlight",
-              type: "line",
-              source: "mapbox-boundary",
-              paint: {
-                "line-width": 2,
-              },
-              // don't highlight anything at first
-              filter: false,
-            },
-            firstSymbolId
-          );
-          // location highlight layer
-          map.addLayer(
-            {
-              id: "location-highlight",
-              type: "line",
-              source: "mapbox-boundary",
-              paint: {
-                "line-color": "#f2ec2e",
-                "line-width": 2,
-              },
-              // don't highlight anything at first
-              filter: false,
-            },
-            firstSymbolId
-          );
-        });
+      map.addLayer(
+        {
+          id: "fully-booked",
+          type: "fill",
+          source: "mapbox-dummy-boundary",
+          "source-layer": "place-boundaries-4z9c5e",
+          paint: {
+            "fill-color": "#ed3b53",
+            "fill-opacity": 1.0,
+            "fill-outline-color": "#0a0a0a",
+          },
+          filter: ["in", "identifier", ...getByStatus(entries, "Fully Booked")],
+        },
+        firstSymbolId
+      );
+
+      map.addLayer(
+        {
+          id: "available",
+          type: "fill",
+          source: "mapbox-dummy-boundary",
+          "source-layer": "place-boundaries-4z9c5e",
+          paint: {
+            "fill-color": "#3ce862",
+            "fill-opacity": 1.0,
+            "fill-outline-color": "#0a0a0a",
+          },
+          filter: ["in", "identifier", ...getByStatus(entries, "Available")],
+        },
+        firstSymbolId
+      );
+
+      // location highlight layer
+      map.addLayer(
+        {
+          id: "mouse-highlight",
+          type: "line",
+          source: "mapbox-dummy-boundary",
+          "source-layer": "place-boundaries-4z9c5e",
+          paint: {
+            "line-width": 2,
+          },
+          // don't highlight anything at first
+          filter: false,
+        },
+        firstSymbolId
+      );
+
+      // location highlight layer
+      map.addLayer(
+        {
+          id: "location-highlight",
+          type: "line",
+          source: "mapbox-dummy-boundary",
+          "source-layer": "place-boundaries-4z9c5e",
+          paint: {
+            "line-color": "#f2ec2e",
+            "line-width": 2,
+          },
+          // don't highlight anything at first
+          filter: false,
+        },
+        firstSymbolId
+      );
     });
 
     map.on("click", function (e) {
       var features = map.queryRenderedFeatures(e.point, {
-        layers: ["boundary-data"],
+        layers: ["fully-booked", "available"],
       });
 
       if (features.length > 0) {
@@ -130,13 +121,12 @@ export default function Map({ center, location, changeLocation, entries }) {
 
     map.on("mousemove", function (e) {
       var features = map.queryRenderedFeatures(e.point, {
-        layers: ["boundary-data"],
+        layers: ["fully-booked", "available"],
       });
 
       if (features.length > 0) {
         var identifier = features[0].properties.identifier;
-        console.log(identifier);
-        map.setFilter("mouse-highlight", ["in", "identifier", identifier]);
+        map.setFilter("mouse-highlight", ["==", "identifier", identifier]);
       } else {
         map.setFilter("mouse-highlight", false);
       }
@@ -145,29 +135,15 @@ export default function Map({ center, location, changeLocation, entries }) {
     // fetch gazetteer data
     const setData = async () => {
       dataRef.current = await fetch("/api/gazetteer").then((res) => res.json());
-
       dataRef.current = dataRef.current.data;
     };
     setData();
-
-    // initialize location -> geoId map
-    const setGeoIds = async () => {
-      const data = await fetch("/api/boundaries").then((res) => res.json());
-      geoIds.current = data.data.features
-        .map((x) => x.properties)
-        .reduce((acc, val) => {
-          // acc[val.NAME.toLowerCase()] = val.GEOID;
-          acc[val.identifier] = val.GEOID;
-          return acc;
-        }, {});
-    };
-    setGeoIds();
   }, []);
 
   // add changing of coordinates on location change
   useEffect(() => {
-    if (dataRef.current && geoIds.current && geoIds.current[location]) {
-      const feat = getFeatures(dataRef.current, geoIds.current[location])[0];
+    if (dataRef.current && location) {
+      const feat = getGazetteerFeatures(dataRef.current, location)[0];
 
       if (!clicked) {
         ref.current.flyTo({

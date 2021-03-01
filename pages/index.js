@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen py-2">
       <Head>
-        <title>DMVAccine</title>
+        <title>cvs vaccine (dot) net</title>
         <link rel="icon" href="/favicon.ico" />
         # for mapbox-gl-js
         <link
@@ -36,9 +36,9 @@ export default function Home() {
       </Head>
 
       <main className="flex flex-col items-center flex-initial px-4 h-3/4 text-center">
-        <h1 className="text-6xl font-bold">DMVaccine.com</h1>
+        <h1 className="text-6xl font-bold">cvs vaccine (dot) net</h1>
         <p className="p-2">
-          Check Covid vaccine availability in the DC-Maryland-Virginia area.
+          Check Covid vaccine availability in CVS locations around the country.
         </p>
 
         <div className="flex flex-1 space-x-4 items-center justify-center mt-6 w-screen h-96">

@@ -1,3 +1,5 @@
+import { toIdentifier } from "../lib/utils";
+
 export default function LocaleDetail({
   location,
   changeLocation,
@@ -5,9 +7,7 @@ export default function LocaleDetail({
   entry,
 }) {
   const getFont = (location) => {
-    if (
-      location === `${entry.city.toLowerCase()}-${entry.state.toLowerCase()}`
-    ) {
+    if (location === toIdentifier(entry.city, entry.fips)) {
       return "text-blue-600";
     }
   };
@@ -18,11 +18,7 @@ export default function LocaleDetail({
       className={`p-3 text-sm text-left ${getFont(
         location
       )} border-bottom w-auto hover:bg-gray-100`}
-      onClick={() =>
-        changeLocation(
-          `${entry.city.toLowerCase()}-${entry.state.toLowerCase()}`
-        )
-      }
+      onClick={() => changeLocation(toIdentifier(entry.city, entry.fips))}
     >
       {entry.city}, {entry.state}
       <br />
