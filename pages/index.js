@@ -9,13 +9,14 @@ import LocaleDetail from "../components/LocaleDetail";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Home() {
+  const [location, setLocation] = useState(null);
+
   const [center, setCenter] = useState({
     long: -77.0364,
     lat: 38.9072,
     zoom: 8,
+    minZoom: 4,
   });
-
-  const [location, setLocation] = useState(null);
 
   const { data, error } = useSWR("/api/", fetcher);
 

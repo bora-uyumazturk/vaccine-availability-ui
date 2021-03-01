@@ -1,4 +1,5 @@
 import { toIdentifier } from "../lib/utils";
+import { format } from "date-fns";
 
 export default function LocaleDetail({
   location,
@@ -24,7 +25,7 @@ export default function LocaleDetail({
       <br />
       Status: {entry.status}
       <br />
-      Last updated: {entry.lastUpdated}
+      Last updated: {format(new Date(entry.lastUpdated), "Pp")}
     </div>
   );
 }

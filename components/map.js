@@ -20,6 +20,7 @@ export default function Map({ center, location, changeLocation, entries }) {
       style: "mapbox://styles/borauyumazturk/ckl4pn50n3lqa17o78ubsy0d0",
       center: [center.long, center.lat],
       zoom: center.zoom,
+      minZoom: center.minZoom,
       attributionControl: false,
     });
 
