@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { usePosition } from "use-position";
 import { toIdentifier, getByStatus, getGazetteerFeatures } from "../lib/utils";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
@@ -11,6 +12,8 @@ export default function Map({ center, location, changeLocation, entries }) {
   let ref = useRef(null);
 
   const [clicked, setClicked] = useState(false);
+
+  const { latitude, longitude } = usePosition();
 
   // set up map and load data
   useEffect(() => {
@@ -162,6 +165,15 @@ export default function Map({ center, location, changeLocation, entries }) {
 
     setClicked(false);
   }, [location, clicked]);
+
+  useEffect(() => {
+    if (dataRef.current && latitude && longitude) {
+      ref.current.flyTo({
+        center: [longitude, latitude],
+        zoom: center.zoom,
+      });
+    }
+  }, [latitude, longitude]);
 
   return <div id="my-map" className="relative h-full w-2/4" />;
 }
