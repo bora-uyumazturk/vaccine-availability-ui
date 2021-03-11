@@ -37,7 +37,7 @@ export default function Home() {
       </Head>
 
       <main className="flex flex-col items-center flex-initial px-4 h-3/4 text-center">
-        <h1 className="text-6xl font-bold">cvs vaccine (dot) net</h1>
+        <h1 className="text-6xl font-bold">cvs 💉 (dot) net</h1>
         <p className="p-2">
           Check Covid vaccine availability in CVS locations around the country.
         </p>
