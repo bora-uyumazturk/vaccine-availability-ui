@@ -1,19 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 import { usePosition } from "use-position";
-import { toIdentifier, getByStatus, getGazetteerFeatures } from "../lib/utils";
+import { toIdentifier, getByStatus } from "../lib/utils";
+import { FIPS_URL } from "../lib/constants";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 export default function Map({ center, location, changeLocation, entries }) {
-  let dataRef = useRef(null);
-
   let ref = useRef(null);
+
+  let fipsRef = useRef(null);
 
   const [clicked, setClicked] = useState(false);
 
   const { latitude, longitude } = usePosition();
+
+  const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
 
   // set up map and load data
   useEffect(() => {
@@ -136,26 +140,44 @@ export default function Map({ center, location, changeLocation, entries }) {
       }
     });
 
-    // fetch gazetteer data
-    const setData = async () => {
-      dataRef.current = await fetch("/api/gazetteer").then((res) => res.json());
-      dataRef.current = dataRef.current.data;
+    // fetch map from fips to state
+    const setFips = async () => {
+      fipsRef.current = await fetch("/api/fips").then((res) => res.json());
+      fipsRef.current = Object.keys(fipsRef.current.data).reduce((acc, k) => {
+        const v = parseInt(fipsRef.current.data[k]);
+        acc[v] = k;
+        return acc;
+      }, {});
     };
-    setData();
+    setFips();
   }, []);
 
   // add changing of coordinates on location change
   useEffect(() => {
-    if (dataRef.current && location) {
-      const feat = getGazetteerFeatures(dataRef.current, location)[0];
+    if (ref.current && location) {
+      const [city, state] = location.split("-");
 
-      if (!clicked && feat) {
+      if (!clicked && fipsRef.current) {
         let curZoom = ref.current.getZoom();
 
-        ref.current.flyTo({
-          center: [parseFloat(feat.INTPTLONG), parseFloat(feat.INTPTLAT)],
-          zoom: Math.max(center.zoom, curZoom),
-        });
+        geocodingClient
+          .forwardGeocode({
+            query: `${city}, ${fipsRef.current[parseInt(state)]}`,
+            types: ["place"],
+            countries: ["US"],
+            autocomplete: false,
+            limit: 1,
+          })
+          .send()
+          .then((response) => {
+            return response.body.features[0].center;
+          })
+          .then((response) => {
+            ref.current.flyTo({
+              center: response,
+              zoom: Math.max(center.zoom, curZoom),
+            });
+          });
       }
 
       ref.current.setFilter("location-highlight", [
@@ -171,7 +193,7 @@ export default function Map({ center, location, changeLocation, entries }) {
   }, [location, clicked]);
 
   useEffect(() => {
-    if (dataRef.current && latitude && longitude) {
+    if (ref.current && latitude && longitude) {
       ref.current.flyTo({
         center: [longitude, latitude],
         zoom: center.zoom,
