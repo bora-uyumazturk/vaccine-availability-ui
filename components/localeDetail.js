@@ -32,7 +32,10 @@ export default function LocaleDetail({
       {entry.status === "Available" && (
         <>
           <br />
-          Make an <a href={CVS_APPT_URL}>appointment</a>
+          Make an{" "}
+          <a href={CVS_APPT_URL} target="_blank">
+            appointment
+          </a>
         </>
       )}
     </div>
