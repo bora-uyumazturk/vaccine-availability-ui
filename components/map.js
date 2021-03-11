@@ -69,7 +69,7 @@ export default function Map({ center, location, changeLocation, entries }) {
           source: "mapbox-dummy-boundary",
           "source-layer": "place-boundaries-4z9c5e",
           paint: {
-            "fill-color": "#3ce862",
+            "fill-color": "#04d91a",
             "fill-opacity": 1.0,
             "fill-outline-color": "#0a0a0a",
           },
@@ -102,7 +102,7 @@ export default function Map({ center, location, changeLocation, entries }) {
           source: "mapbox-dummy-boundary",
           "source-layer": "place-boundaries-4z9c5e",
           paint: {
-            "line-color": "#f2ec2e",
+            "line-color": "#ecf224",
             "line-width": 2,
           },
           // don't highlight anything at first
@@ -150,9 +150,11 @@ export default function Map({ center, location, changeLocation, entries }) {
       const feat = getGazetteerFeatures(dataRef.current, location)[0];
 
       if (!clicked) {
+        let curZoom = ref.current.getZoom();
+
         ref.current.flyTo({
           center: [parseFloat(feat.INTPTLONG), parseFloat(feat.INTPTLAT)],
-          zoom: center.zoom,
+          zoom: Math.max(center.zoom, curZoom),
         });
       }
 
@@ -161,6 +163,8 @@ export default function Map({ center, location, changeLocation, entries }) {
         "identifier",
         location,
       ]);
+
+      ref.current.setFilter("mouse-highlight", false);
     }
 
     setClicked(false);
