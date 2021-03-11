@@ -147,9 +147,6 @@ export default function Map({ center, location, changeLocation, entries }) {
   // add changing of coordinates on location change
   useEffect(() => {
     if (dataRef.current && location) {
-      console.log("zoooooooom");
-      console.log(ref.current.getZoom());
-
       const feat = getGazetteerFeatures(dataRef.current, location)[0];
 
       if (!clicked) {
