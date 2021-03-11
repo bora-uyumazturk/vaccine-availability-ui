@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@mapbox/mapbox-sdk": "^0.12.1",
     "autoprefixer": "^10.0.4",
     "d3": "^6.5.0",
     "date-fns": "^2.18.0",
