@@ -149,7 +149,7 @@ export default function Map({ center, location, changeLocation, entries }) {
     if (dataRef.current && location) {
       const feat = getGazetteerFeatures(dataRef.current, location)[0];
 
-      if (!clicked) {
+      if (!clicked && feat) {
         let curZoom = ref.current.getZoom();
 
         ref.current.flyTo({
