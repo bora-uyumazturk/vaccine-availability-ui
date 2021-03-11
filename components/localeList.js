@@ -5,10 +5,6 @@ import { toIdentifier } from "../lib/utils";
 
 export default function LocaleList({ location, changeLocation, entries }) {
   // https://www.robinwieruch.de/react-scroll-to-item
-  // const refs = entries.reduce((acc, value) => {
-  //   acc[value.city.toLowerCase()] = React.createRef();
-  //   return acc;
-  // }, {});
   const refs = entries.reduce((acc, value) => {
     acc[toIdentifier(value.city, value.fips)] = React.createRef();
     return acc;

@@ -1,4 +1,4 @@
-import { toIdentifier } from "../lib/utils";
+import { toIdentifier, initCap } from "../lib/utils";
 import { format } from "date-fns";
 
 export default function LocaleDetail({
@@ -21,7 +21,9 @@ export default function LocaleDetail({
       )} border-bottom w-auto hover:bg-gray-100`}
       onClick={() => changeLocation(toIdentifier(entry.city, entry.fips))}
     >
-      {entry.city}, {entry.state}
+      <span className={"text-base font-semibold"}>
+        {initCap(entry.city)}, {entry.state}
+      </span>
       <br />
       Status: {entry.status}
       <br />
