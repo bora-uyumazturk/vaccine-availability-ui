@@ -105,7 +105,7 @@ export default function Map({ center, location, changeLocation, entries }) {
       });
     });
 
-    map.on("click", "icons", function (e) {
+    map.on("click", "circles", function (e) {
       const features = e.features;
 
       if (features.length > 0) {
@@ -163,7 +163,8 @@ export default function Map({ center, location, changeLocation, entries }) {
     if (ref.current && location) {
       const [city, state] = location.split("-");
 
-      if (!clicked && fipsRef.current) {
+      console.log(clicked);
+      if (clicked === false && fipsRef.current) {
         let curZoom = ref.current.getZoom();
 
         geocodingClient
@@ -198,7 +199,7 @@ export default function Map({ center, location, changeLocation, entries }) {
     clickedLocation.current = location;
 
     setClicked(false);
-  }, [location, clicked]);
+  }, [location]);
 
   useEffect(() => {
     if (ref.current && latitude && longitude) {

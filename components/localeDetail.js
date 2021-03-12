@@ -25,6 +25,8 @@ export default function LocaleDetail({
       <span className={"text-base font-semibold"}>
         {initCap(entry.city)}, {entry.state}
       </span>
+      <br />
+      Last updated: {format(new Date(entry.lastUpdated), "Pp")}
       {entry.status === "Available" && (
         <>
           <br />
@@ -34,8 +36,6 @@ export default function LocaleDetail({
           </a>
         </>
       )}
-      <br />
-      Last updated: {format(new Date(entry.lastUpdated), "Pp")}
     </div>
   );
 }
