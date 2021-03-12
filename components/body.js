@@ -13,8 +13,8 @@ export default function Body() {
   const [location, setLocation] = useState(null);
 
   const [center, setCenter] = useState({
-    long: -77.0364,
-    lat: 38.9072,
+    long: -96.11,
+    lat: 41.819,
     zoom: 4,
     minZoom: 2.5,
   });
@@ -29,7 +29,9 @@ export default function Body() {
           changeLocation={setLocation}
           entries={[]}
         />
-        <div className="relative h-full w-2/4 border" />
+        <div className="relative h-full w-2/4 border flex justify-center items-center">
+          <img src="/grid.svg" />
+        </div>
       </div>
     );
 

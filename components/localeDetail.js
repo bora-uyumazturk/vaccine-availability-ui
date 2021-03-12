@@ -28,14 +28,15 @@ export default function LocaleDetail({
       {entry.status === "Available" && (
         <>
           <br />
-          Schedule an{" "}
           <a className="hover:underline" href={CVS_APPT_URL} target="_blank">
-            appointment
+            Schedule an appointment
           </a>
         </>
       )}
       <br />
-      Last updated: {format(new Date(entry.lastUpdated), "Pp")}
+      <span className="text-xs">
+        Last updated: {format(new Date(entry.lastUpdated), "Pp") + " EST"}
+      </span>
     </div>
   );
 }

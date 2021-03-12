@@ -32,7 +32,7 @@ export default function Map({ center, location, changeLocation, entries }) {
       container: "my-map",
       style: "mapbox://styles/borauyumazturk/ckl4pn50n3lqa17o78ubsy0d0",
       center: [center.long, center.lat],
-      zoom: center.zoom,
+      zoom: center.minZoom,
       minZoom: center.minZoom,
       attributionControl: false,
     });
