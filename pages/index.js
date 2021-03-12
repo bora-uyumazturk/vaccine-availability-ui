@@ -1,6 +1,7 @@
 import Head from "next/head";
 import useSWR from "swr";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 import Body from "../components/body";
 
@@ -33,7 +34,9 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Made with ❤️ by Bora
+          Made with
+          <img src="/cvs-heart.png" alt="heart" className="h-4 ml-2 mr-2" />
+          by Bora
         </a>
       </footer>
     </div>
