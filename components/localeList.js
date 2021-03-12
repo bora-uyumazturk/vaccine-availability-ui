@@ -26,7 +26,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
   return (
     <ul
       onClick={() => setClicked(true)}
-      className="flex-initial border overflow-auto h-full"
+      className="flex-initial border overflow-auto h-full w-1/5"
     >
       {entries.map(
         (e) =>
