@@ -1,5 +1,5 @@
 import { toIdentifier, initCap } from "../lib/utils";
-import { format } from "date-fns";
+import { format, addHours } from "date-fns";
 import { CVS_APPT_URL } from "../lib/constants";
 
 export default function LocaleDetail({
@@ -35,7 +35,8 @@ export default function LocaleDetail({
       )}
       <br />
       <span className="text-xs">
-        Last updated: {format(new Date(entry.lastUpdated), "Pp") + " EST"}
+        Last updated:{" "}
+        {format(addHours(new Date(entry.lastUpdated), 2), "Pp") + " EST"}
       </span>
     </div>
   );
