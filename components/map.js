@@ -6,9 +6,9 @@ import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 
-const LARGE = 0.4;
+const LARGE = 0.35;
 const MEDIUM = 0.3;
-const SMALL = 0.2;
+const SMALL = 0.25;
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -95,7 +95,7 @@ export default function Map({ center, location, changeLocation, entries }) {
             source: "mapbox-gazetteer-points",
             "source-layer": "gazetteer_w_identifier-c27278",
             paint: {
-              "circle-radius": 10,
+              "circle-radius": 15,
               "circle-opacity": 0.0,
             },
             filter: ["in", "identifier", ...getByStatus(entries, "Available")],
