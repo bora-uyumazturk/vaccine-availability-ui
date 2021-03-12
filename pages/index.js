@@ -14,8 +14,8 @@ export default function Home() {
   const [center, setCenter] = useState({
     long: -77.0364,
     lat: 38.9072,
-    zoom: 8,
-    minZoom: 4,
+    zoom: 4,
+    minZoom: 2.5,
   });
 
   const { data, error } = useSWR("/api/", fetcher);
@@ -28,7 +28,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen py-2">
       <Head>
         <title>cvs vaccine (dot) net</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/syringe.png" />
         # for mapbox-gl-js
         <link
           href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
@@ -60,12 +60,11 @@ export default function Home() {
       <footer className="flex items-center justify-center w-full h-20 border-t margin-top">
         <a
           className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="https://bora-uyumazturk.github.io/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
+          Made with ❤️ by Bora
         </a>
       </footer>
     </div>

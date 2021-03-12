@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { usePosition } from "use-position";
 import { toIdentifier, getByStatus } from "../lib/utils";
-import { FIPS_URL } from "../lib/constants";
+import { FIPS_URL, SYRINGE_IMAGE } from "../lib/constants";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+
+const LARGE = 0.4;
+const MEDIUM = 0.3;
+const SMALL = 0.2;
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -12,6 +16,8 @@ export default function Map({ center, location, changeLocation, entries }) {
   let ref = useRef(null);
 
   let fipsRef = useRef(null);
+
+  let clickedLocation = useRef(null);
 
   const [clicked, setClicked] = useState(false);
 
@@ -45,81 +51,62 @@ export default function Map({ center, location, changeLocation, entries }) {
         }
       }
 
-      map.addSource("mapbox-dummy-boundary", {
+      map.addSource("mapbox-gazetteer-points", {
         type: "vector",
-        url: "mapbox://borauyumazturk.cu4497hu",
+        url: "mapbox://borauyumazturk.duv920xw",
       });
 
-      map.addLayer(
-        {
-          id: "fully-booked",
-          type: "fill",
-          source: "mapbox-dummy-boundary",
-          "source-layer": "place-boundaries-4z9c5e",
-          paint: {
-            "fill-color": "#ed3b53",
-            "fill-opacity": 1.0,
-            "fill-outline-color": "#0a0a0a",
-          },
-          filter: ["in", "identifier", ...getByStatus(entries, "Fully Booked")],
-        },
-        firstSymbolId
-      );
+      // images to load
+      const images = [{ src: SYRINGE_IMAGE, id: "syringe-emoji" }];
 
-      map.addLayer(
-        {
-          id: "available",
-          type: "fill",
-          source: "mapbox-dummy-boundary",
-          "source-layer": "place-boundaries-4z9c5e",
-          paint: {
-            "fill-color": "#04d91a",
-            "fill-opacity": 1.0,
-            "fill-outline-color": "#0a0a0a",
+      // use promises to reduce nesting
+      Promise.all(
+        images.map(
+          (img) =>
+            new Promise((resolve, reject) => {
+              map.loadImage(img.src, function (error, res) {
+                map.addImage(img.id, res);
+                resolve();
+              });
+            })
+        )
+      ).then(() => {
+        map.addLayer(
+          {
+            id: "icons",
+            type: "symbol",
+            source: "mapbox-gazetteer-points",
+            "source-layer": "gazetteer_w_identifier-c27278",
+            layout: {
+              "icon-image": "syringe-emoji",
+              "icon-size": SMALL,
+              "icon-allow-overlap": true,
+            },
+            filter: ["in", "identifier", ...getByStatus(entries, "Available")],
           },
-          filter: ["in", "identifier", ...getByStatus(entries, "Available")],
-        },
-        firstSymbolId
-      );
+          firstSymbolId
+        );
 
-      // location highlight layer
-      map.addLayer(
-        {
-          id: "mouse-highlight",
-          type: "line",
-          source: "mapbox-dummy-boundary",
-          "source-layer": "place-boundaries-4z9c5e",
-          paint: {
-            "line-width": 2,
+        // have more precise layer for event detection
+        map.addLayer(
+          {
+            id: "circles",
+            type: "circle",
+            source: "mapbox-gazetteer-points",
+            "source-layer": "gazetteer_w_identifier-c27278",
+            paint: {
+              "circle-radius": 10,
+              "circle-opacity": 0.0,
+            },
+            filter: ["in", "identifier", ...getByStatus(entries, "Available")],
           },
-          // don't highlight anything at first
-          filter: false,
-        },
-        firstSymbolId
-      );
-
-      // location highlight layer
-      map.addLayer(
-        {
-          id: "location-highlight",
-          type: "line",
-          source: "mapbox-dummy-boundary",
-          "source-layer": "place-boundaries-4z9c5e",
-          paint: {
-            "line-color": "#ecf224",
-            "line-width": 2,
-          },
-          // don't highlight anything at first
-          filter: false,
-        },
-        firstSymbolId
-      );
+          firstSymbolId
+        );
+      });
     });
 
-    map.on("click", function (e) {
-      var features = map.queryRenderedFeatures(e.point, {
-        layers: ["fully-booked", "available"],
-      });
+    map.on("click", "icons", function (e) {
+      const features = e.features;
 
       if (features.length > 0) {
         setClicked(true);
@@ -127,17 +114,36 @@ export default function Map({ center, location, changeLocation, entries }) {
       }
     });
 
-    map.on("mousemove", function (e) {
-      var features = map.queryRenderedFeatures(e.point, {
-        layers: ["fully-booked", "available"],
-      });
+    map.on("mousemove", "circles", function (e) {
+      const features = e.features;
 
       if (features.length > 0) {
         var identifier = features[0].properties.identifier;
-        map.setFilter("mouse-highlight", ["==", "identifier", identifier]);
+        map.setLayoutProperty("icons", "icon-size", [
+          "case",
+          ["==", ["get", "identifier"], clickedLocation.current],
+          LARGE,
+          ["==", ["get", "identifier"], identifier],
+          MEDIUM,
+          SMALL,
+        ]);
       } else {
-        map.setFilter("mouse-highlight", false);
+        map.setLayoutProperty("icons", "icon-size", [
+          "case",
+          ["==", ["get", "identifier"], clickedLocation.current],
+          LARGE,
+          SMALL,
+        ]);
       }
+    });
+
+    map.on("mouseleave", "circles", function (e) {
+      map.setLayoutProperty("icons", "icon-size", [
+        "case",
+        ["==", ["get", "identifier"], clickedLocation.current],
+        LARGE,
+        SMALL,
+      ]);
     });
 
     // fetch map from fips to state
@@ -175,19 +181,21 @@ export default function Map({ center, location, changeLocation, entries }) {
           .then((response) => {
             ref.current.flyTo({
               center: response,
-              zoom: Math.max(center.zoom, curZoom),
+              // zoom: Math.max(center.zoom, curZoom),
+              zoom: curZoom,
             });
           });
       }
 
-      ref.current.setFilter("location-highlight", [
-        "==",
-        "identifier",
-        location,
+      ref.current.setLayoutProperty("icons", "icon-size", [
+        "case",
+        ["==", ["get", "identifier"], location],
+        LARGE,
+        SMALL,
       ]);
-
-      ref.current.setFilter("mouse-highlight", false);
     }
+
+    clickedLocation.current = location;
 
     setClicked(false);
   }, [location, clicked]);

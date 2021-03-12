@@ -25,19 +25,17 @@ export default function LocaleDetail({
       <span className={"text-base font-semibold"}>
         {initCap(entry.city)}, {entry.state}
       </span>
-      <br />
-      Status: {entry.status}
-      <br />
-      Last updated: {format(new Date(entry.lastUpdated), "Pp")}
       {entry.status === "Available" && (
         <>
           <br />
-          Make an{" "}
-          <a href={CVS_APPT_URL} target="_blank">
+          Schedule an{" "}
+          <a className="hover:underline" href={CVS_APPT_URL} target="_blank">
             appointment
           </a>
         </>
       )}
+      <br />
+      Last updated: {format(new Date(entry.lastUpdated), "Pp")}
     </div>
   );
 }
