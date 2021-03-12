@@ -28,14 +28,17 @@ export default function LocaleList({ location, changeLocation, entries }) {
       onClick={() => setClicked(true)}
       className="flex-initial border overflow-auto h-full"
     >
-      {entries.map((e) => (
-        <LocaleDetail
-          location={location}
-          changeLocation={changeLocation}
-          inputRef={refs[toIdentifier(e.city, e.fips)]}
-          entry={e}
-        ></LocaleDetail>
-      ))}
+      {entries.map(
+        (e) =>
+          e.status === "Available" && (
+            <LocaleDetail
+              location={location}
+              changeLocation={changeLocation}
+              inputRef={refs[toIdentifier(e.city, e.fips)]}
+              entry={e}
+            ></LocaleDetail>
+          )
+      )}
     </ul>
   );
 }
