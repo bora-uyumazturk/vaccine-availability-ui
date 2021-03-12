@@ -46,7 +46,7 @@ export default function Home() {
           <LocaleList
             location={location}
             changeLocation={setLocation}
-            entries={data["data"]}
+            entries={_.orderBy(data["data"], ["state", "city"])}
           />
           <Map
             center={center}
