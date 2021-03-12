@@ -9,6 +9,8 @@ import LocaleDetail from "../components/LocaleDetail";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Home() {
+  const { data, error } = useSWR("/api/", fetcher);
+
   const [location, setLocation] = useState(null);
 
   const [center, setCenter] = useState({
@@ -17,8 +19,6 @@ export default function Home() {
     zoom: 4,
     minZoom: 2.5,
   });
-
-  const { data, error } = useSWR("/api/", fetcher);
 
   // TODO: more robust error handling
   if (error) return <div>failed to load</div>;

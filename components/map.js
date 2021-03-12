@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { usePosition } from "use-position";
-import { toIdentifier, getByStatus } from "../lib/utils";
+import { toIdentifier, getByStatus, getGazetteerFeatures } from "../lib/utils";
 import { FIPS_URL, SYRINGE_IMAGE } from "../lib/constants";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
@@ -13,9 +13,9 @@ const SMALL = 0.2;
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 export default function Map({ center, location, changeLocation, entries }) {
-  let ref = useRef(null);
+  let dataRef = useRef(null);
 
-  let fipsRef = useRef(null);
+  let ref = useRef(null);
 
   let clickedLocation = useRef(null);
 
@@ -146,46 +146,26 @@ export default function Map({ center, location, changeLocation, entries }) {
       ]);
     });
 
-    // fetch map from fips to state
-    const setFips = async () => {
-      fipsRef.current = await fetch("/api/fips").then((res) => res.json());
-      fipsRef.current = Object.keys(fipsRef.current.data).reduce((acc, k) => {
-        const v = parseInt(fipsRef.current.data[k]);
-        acc[v] = k;
-        return acc;
-      }, {});
+    // fetch gazetteer data
+    const setData = async () => {
+      dataRef.current = await fetch("/api/gazetteer").then((res) => res.json());
+      dataRef.current = dataRef.current.data;
     };
-    setFips();
+    setData();
   }, []);
 
   // add changing of coordinates on location change
   useEffect(() => {
-    if (ref.current && location) {
-      const [city, state] = location.split("-");
+    if (dataRef.current && location) {
+      const feat = getGazetteerFeatures(dataRef.current, location)[0];
 
-      console.log(clicked);
-      if (clicked === false && fipsRef.current) {
-        let curZoom = ref.current.getZoom();
+      if (clicked === false && feat) {
+        const curZoom = ref.current.getZoom();
 
-        geocodingClient
-          .forwardGeocode({
-            query: `${city}, ${fipsRef.current[parseInt(state)]}`,
-            types: ["place"],
-            countries: ["US"],
-            autocomplete: false,
-            limit: 1,
-          })
-          .send()
-          .then((response) => {
-            return response.body.features[0].center;
-          })
-          .then((response) => {
-            ref.current.flyTo({
-              center: response,
-              // zoom: Math.max(center.zoom, curZoom),
-              zoom: curZoom,
-            });
-          });
+        ref.current.flyTo({
+          center: [parseFloat(feat.longitude), parseFloat(feat.latitude)],
+          zoom: Math.max(center.zoom, curZoom),
+        });
       }
 
       ref.current.setLayoutProperty("icons", "icon-size", [
