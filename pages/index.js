@@ -2,28 +2,9 @@ import Head from "next/head";
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 
-import Map from "../components/map";
-import LocaleList from "../components/localeList";
-import LocaleDetail from "../components/LocaleDetail";
-
-const fetcher = (url) => fetch(url).then((res) => res.json());
+import Body from "../components/body";
 
 export default function Home() {
-  const { data, error } = useSWR("/api/", fetcher);
-
-  const [location, setLocation] = useState(null);
-
-  const [center, setCenter] = useState({
-    long: -77.0364,
-    lat: 38.9072,
-    zoom: 4,
-    minZoom: 2.5,
-  });
-
-  // TODO: more robust error handling
-  if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading...</div>;
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen py-2">
       <Head>
@@ -42,19 +23,7 @@ export default function Home() {
           Check Covid vaccine availability in CVS locations around the country.
         </p>
 
-        <div className="flex flex-1 space-x-4 items-center justify-center mt-6 w-screen h-96">
-          <LocaleList
-            location={location}
-            changeLocation={setLocation}
-            entries={_.orderBy(data["data"], ["state", "city"])}
-          />
-          <Map
-            center={center}
-            location={location}
-            changeLocation={setLocation}
-            entries={data["data"]}
-          />
-        </div>
+        <Body />
       </main>
 
       <footer className="flex items-center justify-center w-full h-20 border-t margin-top">

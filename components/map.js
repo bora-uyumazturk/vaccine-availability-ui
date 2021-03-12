@@ -190,5 +190,5 @@ export default function Map({ center, location, changeLocation, entries }) {
     }
   }, [latitude, longitude]);
 
-  return <div id="my-map" className="relative h-full w-2/4" />;
+  return <div id="my-map" className="relative h-full w-2/4 border" />;
 }
