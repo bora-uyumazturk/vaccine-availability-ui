@@ -190,5 +190,25 @@ export default function Map({ center, location, changeLocation, entries }) {
     }
   }, [latitude, longitude]);
 
+  useEffect(() => {
+    if (ref.current) {
+      try {
+        ref.current.setFilter("icons", [
+          "in",
+          "identifier",
+          ...getByStatus(entries, "Available"),
+        ]);
+
+        ref.current.setFilter("circles", [
+          "in",
+          "identifier",
+          ...getByStatus(entries, "Available"),
+        ]);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  });
+
   return <div id="my-map" className="relative h-full w-2/4 border" />;
 }
