@@ -24,9 +24,9 @@ export default function LocaleList({ location, changeLocation, entries }) {
   }, [location]);
 
   return (
-    <ul
+    <div
       onClick={() => setClicked(true)}
-      className="flex-initial border overflow-auto h-full w-1/5"
+      className="border overflow-scroll h-full w-1/5"
     >
       {entries.map(
         (e) =>
@@ -39,6 +39,6 @@ export default function LocaleList({ location, changeLocation, entries }) {
             ></LocaleDetail>
           )
       )}
-    </ul>
+    </div>
   );
 }
