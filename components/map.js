@@ -148,7 +148,9 @@ export default function Map({ center, location, changeLocation, entries }) {
 
     // fetch gazetteer data
     const setData = async () => {
-      dataRef.current = await fetch("/api/gazetteer").then((res) => res.json());
+      dataRef.current = await fetch("/api/gazetteer/").then((res) =>
+        res.json()
+      );
       dataRef.current = dataRef.current.data;
     };
     setData();
