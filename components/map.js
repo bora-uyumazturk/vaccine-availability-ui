@@ -157,9 +157,11 @@ export default function Map({ center, location, changeLocation, entries }) {
   // add changing of coordinates on location change
   useEffect(() => {
     if (dataRef.current && location) {
+      console.log(location);
       const feat = getGazetteerFeatures(dataRef.current, location)[0];
 
       if (clicked === false && feat) {
+        console.log("flying to loation");
         const curZoom = ref.current.getZoom();
 
         ref.current.flyTo({
@@ -168,6 +170,7 @@ export default function Map({ center, location, changeLocation, entries }) {
         });
       }
 
+      console.log("emphasizing location");
       ref.current.setLayoutProperty("icons", "icon-size", [
         "case",
         ["==", ["get", "identifier"], location],
