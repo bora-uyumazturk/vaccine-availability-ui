@@ -19,12 +19,12 @@ export default function Home() {
       </Head>
 
       <div className="flex flex-col flex-none items-center justify-center max-h-1/4 max-w-3/4 min-h-20 pt-2">
-        <h1 className="block text-3xl sm:text-6xl font-bold max-w-full">
+        <h1 className="block text-3xl md:text-6xl font-bold max-w-full">
           {" "}
           💉 map (dot) net
         </h1>
-        <p className="block max-w-full">
-          Check Covid vaccine availability and schedule appointments in CVS
+        <p className="block max-w-full text-center pt-2">
+          Check Covid vaccine availability and schedule appointments at CVS
           locations around the country.
         </p>
       </div>
