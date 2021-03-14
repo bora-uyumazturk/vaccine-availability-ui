@@ -17,9 +17,7 @@ export default function LocaleDetail({
   return (
     <div
       ref={inputRef}
-      className={`p-3 text-sm text-left ${getFont(
-        location
-      )} border-bottom w-auto hover:bg-gray-100`}
+      className={`p-3 text-sm text-left ${getFont(location)} hover:bg-gray-100`}
       onClick={() => changeLocation(toIdentifier(entry.city, entry.fips))}
     >
       <span className={"text-base font-semibold"}>

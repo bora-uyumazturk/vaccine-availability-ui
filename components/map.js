@@ -210,5 +210,5 @@ export default function Map({ center, location, changeLocation, entries }) {
     }
   });
 
-  return <div id="my-map" className="relative h-full w-2/4 border" />;
+  return <div id="my-map" className="relative h-full w-3/4 md:w-2/4 border" />;
 }
