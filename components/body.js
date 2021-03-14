@@ -23,20 +23,20 @@ export default function Body() {
   if (error) return <div>failed to load</div>;
   if (!data)
     return (
-      <div className="flex flex-row space-x-4 items-center justify-center w-screen h-full max-h-96">
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-full">
         <LocaleList
           location={location}
           changeLocation={setLocation}
           entries={[]}
         />
-        <div className="relative h-full w-2/4 border flex justify-center items-center">
+        <div className="relative h-full w-3/4 md:w-2/4 border flex justify-center items-center">
           <img src="/grid.svg" />
         </div>
       </div>
     );
 
   return (
-    <div className="flex flex-row space-x-4 items-center justify-center w-screen h-full max-h-96">
+    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-full">
       <LocaleList
         location={location}
         changeLocation={setLocation}

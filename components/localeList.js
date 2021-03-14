@@ -26,7 +26,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
   return (
     <div
       onClick={() => setClicked(true)}
-      className="border overflow-scroll h-full w-1/5"
+      className="flex flex-row md:flex-col border overflow-scroll h-full w-3/4 md:w-1/5 divide-x md:divide-x-0 md:divide-y"
     >
       {entries.map(
         (e) =>
