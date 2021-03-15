@@ -2,7 +2,7 @@ import Head from "next/head";
 import useSWR from "swr";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { SYRINGE_IMAGE } from "../lib/constants";
+import { SYRINGE_IMAGE, CVS_COVID_PAGE } from "../lib/constants";
 
 import Body from "../components/body";
 
@@ -26,7 +26,10 @@ export default function Home() {
           -map (dot) net
         </p>
         <p className="block max-w-full text-center pt-2">
-          Check Covid vaccine availability and schedule appointments at CVS
+          Check Covid vaccine availability and schedule appointments at{" "}
+          <a href={CVS_COVID_PAGE} target="_blank" className="hover:underline">
+            CVS
+          </a>{" "}
           locations around the country.
         </p>
       </div>
