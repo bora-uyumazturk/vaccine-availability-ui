@@ -16,5 +16,6 @@ For this project I used (some might say abused) the following frameworks and pac
 
 ## Disclaimer
 
-I am not in any way associated with CVS Pharmacy or their affilicates. This map only shows availability according to their appointment page and is not meant
-to be comprehensive. Please keep in mind that CVS is only one place where you may find vaccines, and there are certainly many others. 
+I am not in any way associated with CVS Pharmacy or their affilicates. 
+Please keep in mind that CVS is only one place where you may find vaccines, and there are plenty of others. Please check your state 
+health department website for further guidance. 
