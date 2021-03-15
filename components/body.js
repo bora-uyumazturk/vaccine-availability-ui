@@ -23,7 +23,7 @@ export default function Body() {
   if (error) return <div>failed to load</div>;
   if (!data)
     return (
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-full">
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-3/4 py-5">
         <LocaleList
           location={location}
           changeLocation={setLocation}
@@ -36,7 +36,7 @@ export default function Body() {
     );
 
   return (
-    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-full">
+    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-3/4 py-5">
       <LocaleList
         location={location}
         changeLocation={setLocation}
