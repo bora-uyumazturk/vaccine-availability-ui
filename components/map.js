@@ -174,32 +174,34 @@ export default function Map({
 
   // add changing of coordinates on location change
   useEffect(() => {
-    if (location) {
-      const feat = getGazetteerFeatures(gazetteer, location)[0];
+    if (rendered) {
+      if (location) {
+        const feat = getGazetteerFeatures(gazetteer, location)[0];
 
-      if (feat) {
-        const curZoom = ref.current.getZoom();
+        try {
+          ref.current.setLayoutProperty("icons", "icon-size", [
+            "case",
+            ["==", ["get", "identifier"], location],
+            LARGE,
+            SMALL,
+          ]);
+        } catch (error) {}
 
-        ref.current.flyTo({
-          center: [parseFloat(feat.longitude), parseFloat(feat.latitude)],
-          zoom: Math.max(center.zoom, curZoom),
-        });
+        if (feat) {
+          const curZoom = ref.current.getZoom();
+
+          ref.current.flyTo({
+            center: [parseFloat(feat.longitude), parseFloat(feat.latitude)],
+            zoom: Math.max(center.zoom, curZoom),
+          });
+        }
       }
 
-      try {
-        ref.current.setLayoutProperty("icons", "icon-size", [
-          "case",
-          ["==", ["get", "identifier"], location],
-          LARGE,
-          SMALL,
-        ]);
-      } catch (error) {}
+      clickedLocation.current = location;
+
+      setClicked(false);
     }
-
-    clickedLocation.current = location;
-
-    setClicked(false);
-  }, [location]);
+  }, [location, rendered]);
 
   useEffect(() => {
     if (rendered) {
