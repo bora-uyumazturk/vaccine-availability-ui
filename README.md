@@ -1,21 +1,19 @@
-# Next.js + Tailwind CSS Example
+# leading-pharmacy-💉-map (dot) net
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) (v2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+This website is a redesign of the [CVS vaccine appointment page](https://www.cvs.com/immunizations/covid-19-vaccine). The project is completely recreational, and
+any utility that anyone derives from it would be completely accidental. My main reason for doing is to put emojis on a map.
 
-## Deploy your own
+## tools
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+For this project I used (some might say abused) the following frameworks and packages:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+- [next.js](https://nextjs.org/) (scaffolding and serverless support)
+- [mapbox](https://www.mapbox.com/) (maps)
+- [github actions](https://github.com/features/actions) (automated scraping, you can find that repository [here](https://github.com/bora-uyumazturk/scrape-covid-availability))
+- [useSWR](https://swr.vercel.app/) (easy data fetching)
+- [vercel](https://vercel.com/dashboard) (deployment)
 
-## How to use
+## Disclaimer
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+I am not in any way associated with CVS Pharmacy or their affilicates. This map only shows availability according to their appointment page and is not meant
+to be comprehensive. Please keep in mind that CVS is only one place where you may find vaccines, and there are certainly many others. 
