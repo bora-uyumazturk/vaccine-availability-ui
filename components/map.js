@@ -177,7 +177,7 @@ export default function Map({
     if (location) {
       const feat = getGazetteerFeatures(gazetteer, location)[0];
 
-      if (!clicked && feat) {
+      if (feat) {
         const curZoom = ref.current.getZoom();
 
         ref.current.flyTo({
