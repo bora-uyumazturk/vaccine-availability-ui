@@ -19,7 +19,7 @@ export default function BodyDisplay({ entries, gazetteer }) {
   const [center, setCenter] = useState({
     long: -96.11,
     lat: 41.819,
-    zoom: 5,
+    zoom: 7,
     minZoom: 2.5,
   });
 
