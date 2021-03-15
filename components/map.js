@@ -179,15 +179,13 @@ export default function Map({
         .queryRenderedFeatures({ layers: ["icons"] })
         .map((x) => x.properties.identifier);
 
-      if (identifiers.length > 20) {
+      if (identifiers.length > 10) {
         changeIdentifiers(identifiers);
       } else {
         var curCenter = ref.current.getCenter();
-        console.log(curCenter);
-        console.log(closestPoint(curCenter.lng, curCenter.lat, gazetteer));
 
         changeIdentifiers(
-          closestPoints(curCenter.lat, curCenter.lng, gazetteer, 20)
+          closestPoints(curCenter.lat, curCenter.lng, gazetteer, 10)
         );
       }
     });
