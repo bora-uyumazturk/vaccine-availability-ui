@@ -3,7 +3,7 @@
 This website is a redesign of the [CVS vaccine appointment page](https://www.cvs.com/immunizations/covid-19-vaccine). The project is completely recreational, and
 any utility that anyone derives from it would be completely accidental. My main reason for doing is to put emojis on a map.
 
-## tools
+## Tools
 
 For this project I used (some might say abused) the following frameworks and packages:
 
