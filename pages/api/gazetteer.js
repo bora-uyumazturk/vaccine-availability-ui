@@ -15,6 +15,10 @@ export default async function handler(req, res) {
     return x;
   });
 
+  data = data.filter((x) => {
+    return x.status === "Available";
+  });
+
   let identifiers = data.map((x) => toIdentifier(x.city, x.fips));
 
   gazetteer = gazetteer.filter((x) => identifiers.includes(x.identifier));

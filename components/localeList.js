@@ -8,7 +8,12 @@ import tailwindConfig from "../tailwind.config.js";
 
 const fullConfig = resolveConfig(tailwindConfig);
 
-export default function LocaleList({ location, changeLocation, entries }) {
+export default function LocaleList({
+  location,
+  rendered,
+  changeLocation,
+  entries,
+}) {
   // https://www.robinwieruch.de/react-scroll-to-item
   const refs = entries.reduce((acc, value) => {
     acc[toIdentifier(value.city, value.fips)] = React.createRef();
@@ -21,7 +26,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
     const small =
       window.screen.width <=
       parseFloat(fullConfig.theme.screens.md.slice(0, -2));
-    if (location) {
+    if (rendered && location) {
       if (!clicked || small) {
         refs[location.toLowerCase()].current.scrollIntoView({
           behavior: small ? "auto" : "smooth",
@@ -31,7 +36,7 @@ export default function LocaleList({ location, changeLocation, entries }) {
     }
 
     setClicked(false);
-  }, [location]);
+  }, [location, rendered]);
 
   return (
     <div

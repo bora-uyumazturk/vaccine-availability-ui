@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { usePosition } from "use-position";
-import { toIdentifier, getByStatus, getGazetteerFeatures } from "../lib/utils";
-import { FIPS_URL, SYRINGE_IMAGE } from "../lib/constants";
+import {
+  toIdentifier,
+  getByStatus,
+  getGazetteerFeatures,
+  closestPoint,
+} from "../lib/utils";
+import { SYRINGE_IMAGE } from "../lib/constants";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
-const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 
 const LARGE = 0.4;
 const MEDIUM = 0.3;
@@ -12,18 +16,23 @@ const SMALL = 0.25;
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-export default function Map({ center, location, changeLocation, entries }) {
-  let dataRef = useRef(null);
-
+export default function Map({
+  center,
+  location,
+  defaultLocation,
+  changeLocation,
+  rendered,
+  changeRendered,
+  entries,
+  gazetteer,
+}) {
   let ref = useRef(null);
 
   let clickedLocation = useRef(null);
 
   const [clicked, setClicked] = useState(false);
 
-  const { latitude, longitude } = usePosition();
-
-  const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
+  const { latitude, longitude, error } = usePosition();
 
   // set up map and load data
   useEffect(() => {
@@ -41,17 +50,9 @@ export default function Map({ center, location, changeLocation, entries }) {
 
     map.on("load", function () {
       var layers = map.getStyle().layers;
-      // Find the index of the first symbol layer in the map style
+      // Find the id of the last layer in the map style
       // so that we can overlay other layers on top of it.
-      var firstSymbolId;
-      for (var i = 0; i < layers.length; i++) {
-        if (layers[i].type === "symbol") {
-          firstSymbolId = layers[i].id;
-          break;
-        }
-      }
-
-      firstSymbolId = map.getStyle().layers[map.getStyle().layers.length - 1]
+      var lastLayerId = map.getStyle().layers[map.getStyle().layers.length - 1]
         .id;
 
       map.addSource("mapbox-gazetteer-points", {
@@ -82,12 +83,18 @@ export default function Map({ center, location, changeLocation, entries }) {
             "source-layer": "gazetteer_w_identifier-c27278",
             layout: {
               "icon-image": "syringe-emoji",
-              "icon-size": SMALL,
+              "icon-size": [
+                "case",
+                ["==", ["get", "identifier"], location],
+                LARGE,
+                SMALL,
+              ],
               "icon-allow-overlap": true,
+              visibility: "visible",
             },
             filter: ["in", "identifier", ...getByStatus(entries, "Available")],
           },
-          firstSymbolId
+          lastLayerId
         );
 
         // have more precise layer for event detection
@@ -103,7 +110,7 @@ export default function Map({ center, location, changeLocation, entries }) {
             },
             filter: ["in", "identifier", ...getByStatus(entries, "Available")],
           },
-          firstSymbolId
+          lastLayerId
         );
       });
     });
@@ -149,20 +156,28 @@ export default function Map({ center, location, changeLocation, entries }) {
       ]);
     });
 
-    // fetch gazetteer data
-    const setData = async () => {
-      dataRef.current = await fetch("/api/gazetteer").then((res) => res.json());
-      dataRef.current = dataRef.current.data;
-    };
-    setData();
+    // cleanup in case earlier events didn't fire
+    // documentation for the event: https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:idle
+    map.on("idle", function (e) {
+      changeRendered(true);
+
+      ref.current.setLayoutProperty("icons", "icon-size", [
+        "case",
+        ["==", ["get", "identifier"], clickedLocation.current],
+        LARGE,
+        SMALL,
+      ]);
+
+      // ref.current.setLayoutProperty("icons", "visibility", "visible");
+    });
   }, []);
 
   // add changing of coordinates on location change
   useEffect(() => {
-    if (dataRef.current && location) {
-      const feat = getGazetteerFeatures(dataRef.current, location)[0];
+    if (location) {
+      const feat = getGazetteerFeatures(gazetteer, location)[0];
 
-      if (clicked === false && feat) {
+      if (feat) {
         const curZoom = ref.current.getZoom();
 
         ref.current.flyTo({
@@ -171,12 +186,14 @@ export default function Map({ center, location, changeLocation, entries }) {
         });
       }
 
-      ref.current.setLayoutProperty("icons", "icon-size", [
-        "case",
-        ["==", ["get", "identifier"], location],
-        LARGE,
-        SMALL,
-      ]);
+      try {
+        ref.current.setLayoutProperty("icons", "icon-size", [
+          "case",
+          ["==", ["get", "identifier"], location],
+          LARGE,
+          SMALL,
+        ]);
+      } catch (error) {}
     }
 
     clickedLocation.current = location;
@@ -185,13 +202,15 @@ export default function Map({ center, location, changeLocation, entries }) {
   }, [location]);
 
   useEffect(() => {
-    if (ref.current && latitude && longitude) {
-      ref.current.flyTo({
-        center: [longitude, latitude],
-        zoom: center.zoom,
-      });
+    if (rendered) {
+      if (ref.current && latitude && longitude) {
+        changeLocation(closestPoint(latitude, longitude, gazetteer));
+      } else if (error) {
+        console.log(error);
+        changeLocation(defaultLocation);
+      }
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, error, rendered]);
 
   useEffect(() => {
     if (ref.current) {
