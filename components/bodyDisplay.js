@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import _ from "lodash";
-import { toIdentifier } from "../lib/utils";
 import Map from "../components/map";
 import LocaleList from "../components/localeList";
 
-export default function BodyDisplay({ entries, gazetteer }) {
+export default function BodyDisplay({ entries }) {
   const defaultEntry = _.orderBy(
     _.filter(entries, (x) => {
       return x.status === "Available";
@@ -34,12 +33,11 @@ export default function BodyDisplay({ entries, gazetteer }) {
       <Map
         center={center}
         location={location}
-        defaultLocation={toIdentifier(defaultEntry.city, defaultEntry.fips)}
+        defaultLocation={defaultEntry.identifier}
         changeLocation={setLocation}
         rendered={rendered}
         changeRendered={setRendered}
         entries={entries}
-        gazetteer={gazetteer}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import LocaleDetail from "./localeDetail";
 import React from "react";
 import { useState, useEffect } from "react";
-import { toIdentifier } from "../lib/utils";
 
 import resolveConfig from "tailwindcss/resolveConfig";
 import tailwindConfig from "../tailwind.config.js";
@@ -16,7 +15,7 @@ export default function LocaleList({
 }) {
   // https://www.robinwieruch.de/react-scroll-to-item
   const refs = entries.reduce((acc, value) => {
-    acc[toIdentifier(value.city, value.fips)] = React.createRef();
+    acc[value.identifier] = React.createRef();
     return acc;
   }, {});
 
@@ -49,8 +48,9 @@ export default function LocaleList({
             <LocaleDetail
               location={location}
               changeLocation={changeLocation}
-              inputRef={refs[toIdentifier(e.city, e.fips)]}
+              inputRef={refs[e.identifier]}
               entry={e}
+              key={e.identifier}
             ></LocaleDetail>
           )
       )}

@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import * as d3 from "d3";
 import _ from "lodash";
-import { toIdentifier } from "../../lib/utils";
+import { toIdentifier, leftJoin } from "../../lib/utils";
 import { DATA_URL, FIPS_URL, GAZETTEER_URL } from "../../lib/constants";
 
 // currently returns sample data
@@ -12,6 +12,7 @@ export default async function handler(req, res) {
   data = data.map((x) => {
     x.city_lower = x.city.toLowerCase();
     x.fips = fips_map[x.state];
+    x.identifier = toIdentifier(x.city, x.fips);
     return x;
   });
 
@@ -20,6 +21,10 @@ export default async function handler(req, res) {
   let identifiers = gazetteer.map((x) => x.identifier);
 
   data = data.filter((x) => identifiers.includes(toIdentifier(x.city, x.fips)));
+
+  data = data.filter((x) => x.status === "Available");
+
+  data = leftJoin(data, gazetteer, "identifier");
 
   res.status(200).json({ data: data });
 }

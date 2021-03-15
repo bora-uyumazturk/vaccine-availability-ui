@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { usePosition } from "use-position";
 import {
-  toIdentifier,
   getByStatus,
-  getGazetteerFeatures,
+  getFeaturesByIdentifier,
   closestPoint,
 } from "../lib/utils";
 import { SYRINGE_IMAGE } from "../lib/constants";
@@ -24,7 +23,6 @@ export default function Map({
   rendered,
   changeRendered,
   entries,
-  gazetteer,
 }) {
   let ref = useRef(null);
 
@@ -176,7 +174,7 @@ export default function Map({
   useEffect(() => {
     if (rendered) {
       if (location) {
-        const feat = getGazetteerFeatures(gazetteer, location)[0];
+        const feat = getFeaturesByIdentifier(entries, location)[0];
 
         try {
           ref.current.setLayoutProperty("icons", "icon-size", [
@@ -206,7 +204,7 @@ export default function Map({
   useEffect(() => {
     if (rendered) {
       if (ref.current && latitude && longitude) {
-        changeLocation(closestPoint(latitude, longitude, gazetteer));
+        changeLocation(closestPoint(latitude, longitude, entries));
       } else if (error) {
         console.log(error);
         changeLocation(defaultLocation);

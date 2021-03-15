@@ -9,11 +9,10 @@ const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Body() {
   const { data, error } = useSWR("/api", fetcher);
-  const gazetteer = useSWR("/api/gazetteer", fetcher);
 
   // TODO: more robust error handling
-  if (error || gazetteer.error) return <div>failed to load</div>;
-  if (!data || !gazetteer.data)
+  if (error) return <div>failed to load</div>;
+  if (!data)
     return (
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-3/4 py-5">
         <LocaleList entries={[]} />
@@ -23,7 +22,5 @@ export default function Body() {
       </div>
     );
 
-  return (
-    <BodyDisplay entries={data["data"]} gazetteer={gazetteer["data"]["data"]} />
-  );
+  return <BodyDisplay entries={data["data"]} />;
 }
