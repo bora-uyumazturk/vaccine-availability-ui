@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen">
       <Head>
-        <title>cvs vaccine (dot) net</title>
+        <title>Not Walgreens</title>
         <link rel="icon" href="/syringe.png" />
         # for mapbox-gl-js
         <link
@@ -21,7 +21,7 @@ export default function Home() {
       <div className="flex flex-col flex-none items-center justify-center max-h-1/4 max-w-3/4 min-h-20 pt-2">
         <h1 className="block text-center text-2xl md:text-4xl font-bold max-w-full">
           {" "}
-          leading-pharmacy-brand-💉-map (dot) net
+          leading-pharmacy-chain-💉-map (dot) net
         </h1>
         <p className="block max-w-full text-center pt-2">
           Check Covid vaccine availability and schedule appointments at CVS
