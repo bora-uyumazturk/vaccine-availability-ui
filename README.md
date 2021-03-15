@@ -1,4 +1,4 @@
-# leading-pharmacy-chain-<img src="/public/syringe_softb.png" alt="syringe" width="50"/>-map (dot) net
+# leading-pharmacy-chain-vax-map (dot) net
 
 This website is a redesign of the [CVS vaccine appointment page](https://www.cvs.com/immunizations/covid-19-vaccine). The project is purely recreational, and
 any utility that anyone derives from it is completely accidental. My main reason for doing is to put emojis on a map.
