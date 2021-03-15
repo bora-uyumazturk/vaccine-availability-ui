@@ -9,7 +9,6 @@ import {
 import { SYRINGE_IMAGE } from "../lib/constants";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
-const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 
 const LARGE = 0.4;
 const MEDIUM = 0.3;
@@ -20,7 +19,10 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 export default function Map({
   center,
   location,
+  defaultLocation,
   changeLocation,
+  rendered,
+  changeRendered,
   entries,
   gazetteer,
 }) {
@@ -30,9 +32,7 @@ export default function Map({
 
   const [clicked, setClicked] = useState(false);
 
-  const { latitude, longitude } = usePosition();
-
-  const geocodingClient = mbxGeocoding({ accessToken: mapboxgl.accessToken });
+  const { latitude, longitude, error } = usePosition();
 
   // set up map and load data
   useEffect(() => {
@@ -50,17 +50,9 @@ export default function Map({
 
     map.on("load", function () {
       var layers = map.getStyle().layers;
-      // Find the index of the first symbol layer in the map style
+      // Find the id of the last layer in the map style
       // so that we can overlay other layers on top of it.
-      var firstSymbolId;
-      for (var i = 0; i < layers.length; i++) {
-        if (layers[i].type === "symbol") {
-          firstSymbolId = layers[i].id;
-          break;
-        }
-      }
-
-      firstSymbolId = map.getStyle().layers[map.getStyle().layers.length - 1]
+      var lastLayerId = map.getStyle().layers[map.getStyle().layers.length - 1]
         .id;
 
       map.addSource("mapbox-gazetteer-points", {
@@ -91,12 +83,18 @@ export default function Map({
             "source-layer": "gazetteer_w_identifier-c27278",
             layout: {
               "icon-image": "syringe-emoji",
-              "icon-size": SMALL,
+              "icon-size": [
+                "case",
+                ["==", ["get", "identifier"], location],
+                LARGE,
+                SMALL,
+              ],
               "icon-allow-overlap": true,
+              visibility: "visible",
             },
             filter: ["in", "identifier", ...getByStatus(entries, "Available")],
           },
-          firstSymbolId
+          lastLayerId
         );
 
         // have more precise layer for event detection
@@ -112,7 +110,7 @@ export default function Map({
             },
             filter: ["in", "identifier", ...getByStatus(entries, "Available")],
           },
-          firstSymbolId
+          lastLayerId
         );
       });
     });
@@ -157,6 +155,21 @@ export default function Map({
         SMALL,
       ]);
     });
+
+    // cleanup in case earlier events didn't fire
+    // documentation for the event: https://docs.mapbox.com/mapbox-gl-js/api/map/#map.event:idle
+    map.on("idle", function (e) {
+      changeRendered(true);
+
+      ref.current.setLayoutProperty("icons", "icon-size", [
+        "case",
+        ["==", ["get", "identifier"], clickedLocation.current],
+        LARGE,
+        SMALL,
+      ]);
+
+      // ref.current.setLayoutProperty("icons", "visibility", "visible");
+    });
   }, []);
 
   // add changing of coordinates on location change
@@ -164,7 +177,7 @@ export default function Map({
     if (location) {
       const feat = getGazetteerFeatures(gazetteer, location)[0];
 
-      if (clicked === false && feat) {
+      if (!clicked && feat) {
         const curZoom = ref.current.getZoom();
 
         ref.current.flyTo({
@@ -173,12 +186,14 @@ export default function Map({
         });
       }
 
-      ref.current.setLayoutProperty("icons", "icon-size", [
-        "case",
-        ["==", ["get", "identifier"], location],
-        LARGE,
-        SMALL,
-      ]);
+      try {
+        ref.current.setLayoutProperty("icons", "icon-size", [
+          "case",
+          ["==", ["get", "identifier"], location],
+          LARGE,
+          SMALL,
+        ]);
+      } catch (error) {}
     }
 
     clickedLocation.current = location;
@@ -187,15 +202,15 @@ export default function Map({
   }, [location]);
 
   useEffect(() => {
-    if (ref.current && latitude && longitude) {
-      changeLocation(closestPoint(latitude, longitude, gazetteer));
-
-      // ref.current.flyTo({
-      //   center: [longitude, latitude],
-      //   zoom: center.zoom,
-      // });
+    if (rendered) {
+      if (ref.current && latitude && longitude) {
+        changeLocation(closestPoint(latitude, longitude, gazetteer));
+      } else if (error) {
+        console.log(error);
+        changeLocation(defaultLocation);
+      }
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, error, rendered]);
 
   useEffect(() => {
     if (ref.current) {
