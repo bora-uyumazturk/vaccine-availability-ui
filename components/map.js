@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { usePosition } from "use-position";
-import { toIdentifier, getByStatus, getGazetteerFeatures } from "../lib/utils";
-import { FIPS_URL, SYRINGE_IMAGE } from "../lib/constants";
+import {
+  toIdentifier,
+  getByStatus,
+  getGazetteerFeatures,
+  closestPoint,
+} from "../lib/utils";
+import { SYRINGE_IMAGE } from "../lib/constants";
 import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
@@ -12,9 +17,13 @@ const SMALL = 0.25;
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-export default function Map({ center, location, changeLocation, entries }) {
-  let dataRef = useRef(null);
-
+export default function Map({
+  center,
+  location,
+  changeLocation,
+  entries,
+  gazetteer,
+}) {
   let ref = useRef(null);
 
   let clickedLocation = useRef(null);
@@ -148,19 +157,12 @@ export default function Map({ center, location, changeLocation, entries }) {
         SMALL,
       ]);
     });
-
-    // fetch gazetteer data
-    const setData = async () => {
-      dataRef.current = await fetch("/api/gazetteer").then((res) => res.json());
-      dataRef.current = dataRef.current.data;
-    };
-    setData();
   }, []);
 
   // add changing of coordinates on location change
   useEffect(() => {
-    if (dataRef.current && location) {
-      const feat = getGazetteerFeatures(dataRef.current, location)[0];
+    if (location) {
+      const feat = getGazetteerFeatures(gazetteer, location)[0];
 
       if (clicked === false && feat) {
         const curZoom = ref.current.getZoom();
@@ -186,10 +188,12 @@ export default function Map({ center, location, changeLocation, entries }) {
 
   useEffect(() => {
     if (ref.current && latitude && longitude) {
-      ref.current.flyTo({
-        center: [longitude, latitude],
-        zoom: center.zoom,
-      });
+      changeLocation(closestPoint(latitude, longitude, gazetteer));
+
+      // ref.current.flyTo({
+      //   center: [longitude, latitude],
+      //   zoom: center.zoom,
+      // });
     }
   }, [latitude, longitude]);
 

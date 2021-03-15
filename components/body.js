@@ -8,8 +8,8 @@ import LocaleList from "../components/localeList";
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 export default function Body() {
-  const { data, error } = useSWR("/api/", fetcher);
-
+  const { data, error } = useSWR("/api", fetcher);
+  const gazetteer = useSWR("/api/gazetteer", fetcher);
   const [location, setLocation] = useState(null);
 
   const [center, setCenter] = useState({
@@ -20,8 +20,8 @@ export default function Body() {
   });
 
   // TODO: more robust error handling
-  if (error) return <div>failed to load</div>;
-  if (!data)
+  if (error || gazetteer.error) return <div>failed to load</div>;
+  if (!data || !gazetteer.data)
     return (
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-3/4 py-5">
         <LocaleList
@@ -47,6 +47,7 @@ export default function Body() {
         location={location}
         changeLocation={setLocation}
         entries={data["data"]}
+        gazetteer={gazetteer["data"]["data"]}
       />
     </div>
   );
