@@ -1,7 +1,8 @@
 # leading-pharmacy-chain-vax-map (dot) net
 
-This website is a redesign of the [CVS vaccine appointment page](https://www.cvs.com/immunizations/covid-19-vaccine). The project is purely recreational, and
-any utility that anyone derives from it is sheer coincidence. My main reason for doing is to put emojis on a map.
+This website is a playful redesign of the [CVS vaccine appointment page](https://www.cvs.com/immunizations/covid-19-vaccine). 
+The project is purely recreational, and any utility that anyone derives from it is sheer coincidence. 
+It's mostly an excuse to put emojis on a map.
 
 ## Tools
 
