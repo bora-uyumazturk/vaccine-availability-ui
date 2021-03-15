@@ -6,7 +6,7 @@ import _ from "lodash";
 const mapboxgl = require("mapbox-gl/dist/mapbox-gl.js");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 
-const LARGE = 0.35;
+const LARGE = 0.4;
 const MEDIUM = 0.3;
 const SMALL = 0.25;
 

@@ -7,7 +7,7 @@ import Body from "../components/body";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center h-screen max-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen">
       <Head>
         <title>cvs vaccine (dot) net</title>
         <link rel="icon" href="/syringe.png" />
@@ -29,9 +29,7 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="flex-grow max-h-3/4 py-5">
-        <Body />
-      </div>
+      <Body />
 
       <footer className="flex flex-none flex-col space-y-5 items-center justify-center w-full max-h-1/4 border-t py-2">
         <a
