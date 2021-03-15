@@ -18,7 +18,7 @@ export default function BodyDisplay({ entries }) {
   const [center, setCenter] = useState({
     long: -96.11,
     lat: 41.819,
-    zoom: 7,
+    zoom: 6.5,
     minZoom: 2.5,
   });
 
