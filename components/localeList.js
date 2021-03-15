@@ -11,6 +11,7 @@ const fullConfig = resolveConfig(tailwindConfig);
 export default function LocaleList({
   location,
   rendered,
+  identifiers,
   changeLocation,
   entries,
 }) {
@@ -26,7 +27,7 @@ export default function LocaleList({
     const small =
       window.screen.width <=
       parseFloat(fullConfig.theme.screens.md.slice(0, -2));
-    if (rendered && location) {
+    if (rendered && location && identifiers.includes(location)) {
       if (!clicked || small) {
         refs[location.toLowerCase()].current.scrollIntoView({
           behavior: small ? "auto" : "smooth",
@@ -36,7 +37,7 @@ export default function LocaleList({
     }
 
     setClicked(false);
-  }, [location, rendered]);
+  }, [location, rendered, identifiers]);
 
   return (
     <div
@@ -45,7 +46,8 @@ export default function LocaleList({
     >
       {entries.map(
         (e) =>
-          e.status === "Available" && (
+          e.status === "Available" &&
+          identifiers.includes(toIdentifier(e.city, e.fips)) && (
             <LocaleDetail
               location={location}
               changeLocation={changeLocation}

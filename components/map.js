@@ -5,6 +5,7 @@ import {
   getByStatus,
   getGazetteerFeatures,
   closestPoint,
+  closestPoints,
 } from "../lib/utils";
 import { SYRINGE_IMAGE } from "../lib/constants";
 import _ from "lodash";
@@ -23,6 +24,7 @@ export default function Map({
   changeLocation,
   rendered,
   changeRendered,
+  changeIdentifiers,
   entries,
   gazetteer,
 }) {
@@ -169,6 +171,25 @@ export default function Map({
       ]);
 
       // ref.current.setLayoutProperty("icons", "visibility", "visible");
+    });
+
+    map.on("moveend", function (e) {
+      console.log(ref.current.queryRenderedFeatures({ layers: ["icons"] }));
+      var identifiers = ref.current
+        .queryRenderedFeatures({ layers: ["icons"] })
+        .map((x) => x.properties.identifier);
+
+      if (identifiers.length > 20) {
+        changeIdentifiers(identifiers);
+      } else {
+        var curCenter = ref.current.getCenter();
+        console.log(curCenter);
+        console.log(closestPoint(curCenter.lng, curCenter.lat, gazetteer));
+
+        changeIdentifiers(
+          closestPoints(curCenter.lat, curCenter.lng, gazetteer, 20)
+        );
+      }
     });
   }, []);
 

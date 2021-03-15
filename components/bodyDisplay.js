@@ -16,6 +16,12 @@ export default function BodyDisplay({ entries, gazetteer }) {
 
   const [rendered, setRendered] = useState(false);
 
+  const [identifiers, setIdentifiers] = useState(
+    entries.map((x) => {
+      return toIdentifier(x.city, x.fips);
+    })
+  );
+
   const [center, setCenter] = useState({
     long: -96.11,
     lat: 41.819,
@@ -27,7 +33,8 @@ export default function BodyDisplay({ entries, gazetteer }) {
     <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 items-center justify-center w-screen h-3/4 py-5">
       <LocaleList
         location={location}
-        rendered={rendered}
+        rendered={entries}
+        identifiers={identifiers}
         changeLocation={setLocation}
         entries={_.orderBy(entries, ["state", "city"])}
       />
@@ -38,6 +45,7 @@ export default function BodyDisplay({ entries, gazetteer }) {
         changeLocation={setLocation}
         rendered={rendered}
         changeRendered={setRendered}
+        changeIdentifiers={setIdentifiers}
         entries={entries}
         gazetteer={gazetteer}
       />
