@@ -30,7 +30,7 @@ export default function Map({ center, location, changeLocation, entries }) {
     // initialize map and set map effects
     ref.current = new mapboxgl.Map({
       container: "my-map",
-      style: "mapbox://styles/borauyumazturk/ckl4pn50n3lqa17o78ubsy0d0",
+      style: "mapbox://styles/mapbox/streets-v11",
       center: [center.long, center.lat],
       zoom: center.minZoom,
       minZoom: center.minZoom,
@@ -50,6 +50,9 @@ export default function Map({ center, location, changeLocation, entries }) {
           break;
         }
       }
+
+      firstSymbolId = map.getStyle().layers[map.getStyle().layers.length - 1]
+        .id;
 
       map.addSource("mapbox-gazetteer-points", {
         type: "vector",
