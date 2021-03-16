@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen">
       <Head>
-        <title>Not Walgreens</title>
+        <title>not walgreens</title>
         <link rel="icon" href={SYRINGE_IMAGE} />
         # for mapbox-gl-js
         <link
