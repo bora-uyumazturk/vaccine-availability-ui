@@ -1,4 +1,4 @@
-# leading-pharmacy-chain-vax-map (dot) net
+# [leading-pharmacy-chain-vax-map (dot) net](https://leading-pharmacy-chain-vax-map.net/)
 
 This website is a playful redesign of the [CVS vaccine appointment page](https://www.cvs.com/immunizations/covid-19-vaccine). 
 The project is purely recreational, and any utility that anyone derives from it is sheer coincidence. 
