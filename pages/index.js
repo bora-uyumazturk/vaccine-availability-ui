@@ -25,7 +25,7 @@ export default function Home() {
         />
         <meta
           property="og:image"
-          content="https://vaccine-availa-git-bora-uyumazturk-meta-tags-bora-uyu-c24094.vercel.app/preview.png"
+          content="https://leading-pharmacy-chain-vax-map.net/preview.png"
         />
         <meta
           property="og:description"
@@ -51,7 +51,7 @@ export default function Home() {
         />
         <meta
           property="twitter:image"
-          content="https://vaccine-availa-git-bora-uyumazturk-meta-tags-bora-uyu-c24094.vercel.app/preview.png"
+          content="https://leading-pharmacy-chain-vax-map.net/preview.png"
         />
       </Head>
 
