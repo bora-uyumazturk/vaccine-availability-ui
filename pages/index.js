@@ -17,6 +17,15 @@ export default function Home() {
           href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
           rel="stylesheet"
         />
+        <meta property="og:image" content="/preview.png" />
+        <meta
+          property="og:description"
+          content="Check Covid vaccine availability and schedule appointments at CVS locations across the country."
+        />
+        <meta
+          property="og:title"
+          content="leading-pharmacy-chain-vax-map.net"
+        />
       </Head>
 
       <div className="flex flex-col flex-none items-center justify-center max-h-1/4 max-w-3/4 min-h-20 pt-2">
