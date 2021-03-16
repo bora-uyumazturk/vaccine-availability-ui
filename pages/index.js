@@ -17,6 +17,12 @@ export default function Home() {
           href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
           rel="stylesheet"
         />
+        <link rel="apple touch icon" href="/preview.png" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://leading-pharmacy-chain-vax-map.net/"
+        />
         <meta property="og:image" content="/preview.png" />
         <meta
           property="og:description"
@@ -24,8 +30,23 @@ export default function Home() {
         />
         <meta
           property="og:title"
-          content="leading-pharmacy-chain-vax-map.net"
+          content="leading-pharmacy-chain-vax-map (dot) net"
         />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:url"
+          content="https://leading-pharmacy-chain-vax-map.net/"
+        />
+        <meta property="twitter:creator" content="notsleepingturk" />
+        <meta
+          property="twitter:title"
+          content="leading-pharmacy-chain-vax-map (dot) net"
+        />
+        <meta
+          property="twitter:description"
+          content="Check Covid vaccine availability and schedule appointments at CVS locations across the country."
+        />
+        <meta property="twitter:image" content="/preview.png" />
       </Head>
 
       <div className="flex flex-col flex-none items-center justify-center max-h-1/4 max-w-3/4 min-h-20 pt-2">
