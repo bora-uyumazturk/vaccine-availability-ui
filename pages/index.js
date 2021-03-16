@@ -23,7 +23,10 @@ export default function Home() {
           property="og:url"
           content="https://leading-pharmacy-chain-vax-map.net/"
         />
-        <meta property="og:image" content="/preview.png" />
+        <meta
+          property="og:image"
+          content="https://vaccine-availa-git-bora-uyumazturk-meta-tags-bora-uyu-c24094.vercel.app/preview.png"
+        />
         <meta
           property="og:description"
           content="Check Covid vaccine availability and schedule appointments at CVS locations across the country."
@@ -46,7 +49,10 @@ export default function Home() {
           property="twitter:description"
           content="Check Covid vaccine availability and schedule appointments at CVS locations across the country."
         />
-        <meta property="twitter:image" content="/preview.png" />
+        <meta
+          property="twitter:image"
+          content="https://vaccine-availa-git-bora-uyumazturk-meta-tags-bora-uyu-c24094.vercel.app/preview.png"
+        />
       </Head>
 
       <div className="flex flex-col flex-none items-center justify-center max-h-1/4 max-w-3/4 min-h-20 pt-2">
