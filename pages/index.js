@@ -10,12 +10,48 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen h-screen max-h-screen">
       <Head>
-        <title>Not Walgreens</title>
+        <title>not walgreens</title>
         <link rel="icon" href={SYRINGE_IMAGE} />
         # for mapbox-gl-js
         <link
           href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
           rel="stylesheet"
+        />
+        <link rel="apple touch icon" href="/preview.png" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://leading-pharmacy-chain-vax-map.net/"
+        />
+        <meta
+          property="og:image"
+          content="https://leading-pharmacy-chain-vax-map.net/preview.png"
+        />
+        <meta
+          property="og:description"
+          content="Check Covid vaccine availability and schedule appointments at CVS locations across the country."
+        />
+        <meta
+          property="og:title"
+          content="leading-pharmacy-chain-vax-map (dot) net"
+        />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:url"
+          content="https://leading-pharmacy-chain-vax-map.net/"
+        />
+        <meta property="twitter:creator" content="notsleepingturk" />
+        <meta
+          property="twitter:title"
+          content="leading-pharmacy-chain-vax-map (dot) net"
+        />
+        <meta
+          property="twitter:description"
+          content="Check Covid vaccine availability and schedule appointments at CVS locations across the country."
+        />
+        <meta
+          property="twitter:image"
+          content="https://leading-pharmacy-chain-vax-map.net/preview.png"
         />
       </Head>
 
