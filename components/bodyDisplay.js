@@ -33,7 +33,7 @@ export default function BodyDisplay({ entries }) {
       <Map
         center={center}
         location={location}
-        defaultLocation={defaultEntry.identifier}
+        defaultLocation={defaultEntry ? defaultEntry.identifier : null}
         changeLocation={setLocation}
         rendered={rendered}
         changeRendered={setRendered}

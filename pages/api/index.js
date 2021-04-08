@@ -4,7 +4,6 @@ import _ from "lodash";
 import { toIdentifier, leftJoin } from "../../lib/utils";
 import { DATA_URL, FIPS_URL, GAZETTEER_URL } from "../../lib/constants";
 
-// currently returns sample data
 export default async function handler(req, res) {
   let data = await d3.csv(DATA_URL);
   let fips_map = await d3.json(FIPS_URL);
