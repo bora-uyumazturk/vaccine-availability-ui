@@ -205,7 +205,7 @@ export default function Map({
     if (rendered) {
       if (ref.current && latitude && longitude) {
         changeLocation(closestPoint(latitude, longitude, entries));
-      } else if (error) {
+      } else if (error && defaultLocation) {
         console.log(error);
         changeLocation(defaultLocation);
       }
